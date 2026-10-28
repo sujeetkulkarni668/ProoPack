@@ -1,0 +1,13 @@
+{
+  "name": "@proofpack/shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/**/*.test.js || echo 'No tests'"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

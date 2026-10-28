@@ -1,0 +1,31 @@
+{
+  "name": "proofpack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-Stack Layer 2 Transaction Optimization Platform for MST Blockchain",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "contracts"
+  ],
+  "scripts": {
+    "build": "npm --workspace=packages/shared run build && npm --workspace=packages/crypto run build && npm --workspace=packages/compression run build && npm --workspace=packages/chain-adapters run build && npm --workspace=apps/batcher run build && npm --workspace=apps/api run build && npm --workspace=apps/web run build",
+    "test": "npm --workspace=packages/crypto run test && npm --workspace=packages/compression run test && npm --workspace=packages/chain-adapters run test && npm --workspace=apps/batcher run test",
+    "test:contracts": "npm --workspace=contracts test",
+    "test:all": "npm test && npm run test:contracts",
+    "dev:api": "npm --workspace=apps/api run dev",
+    "dev:web": "npm --workspace=apps/web run dev",
+    "benchmark": "node tests/benchmarks/benchmark-runner.js"
+  },
+  "keywords": [
+    "layer2",
+    "mst-blockchain",
+    "bridgekey",
+    "rollup",
+    "batching",
+    "compression",
+    "solidity"
+  ],
+  "author": "ProofPack Engineering Team",
+  "license": "MIT"
+}
