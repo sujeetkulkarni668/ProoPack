@@ -26,9 +26,9 @@ export const Overview: React.FC<OverviewProps> = ({
   chainId
 }) => {
   // Transform real L2 transactions into Web3Activity items
-  const activities: Web3Activity[] = transactions.slice(0, 5).map(t => ({
+  const activities: Web3Activity[] = transactions.slice(0, 6).map(t => ({
     id: t.txId,
-    kind: t.status === 'SETTLED' ? 'bridge' : 'swap',
+    kind: t.status === 'SETTLED' ? 'settlement' : 'transfer',
     title: `L2 Transfer · ${(Number(t.amount) / 1e18).toFixed(3)} MSTC`,
     detail: `To ${t.to.slice(0, 6)}...${t.to.slice(-4)} · Nonce ${t.nonce}`,
     amount: `−${(Number(t.amount) / 1e18).toFixed(3)} MSTC`,
@@ -52,9 +52,16 @@ export const Overview: React.FC<OverviewProps> = ({
       <Web3Bento
         account={accountDisplay}
         network={networkLabel}
+        transactions={transactions}
+        batches={batches}
+        analytics={analytics}
+        health={health}
         onOpenSendModal={onOpenSendModal}
+        onSelectBatch={onSelectBatch}
         activity={activities.length > 0 ? activities : undefined}
       />
     </div>
   );
 };
+
+export default Overview;

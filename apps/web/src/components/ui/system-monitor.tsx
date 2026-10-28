@@ -17,7 +17,8 @@ import {
   Terminal,
   RefreshCw,
   Sliders,
-  CheckCircle2
+  CheckCircle2,
+  GraduationCap
 } from "lucide-react";
 
 export interface AgentProcess {
@@ -125,34 +126,34 @@ export function SystemMonitor({
   };
 
   return (
-    <div className={`rounded-2xl border border-gray-800 bg-[#0c101d] p-5 text-gray-100 shadow-2xl backdrop-blur ${className}`}>
+    <div className={`rounded-3xl border border-slate-200 dark:border-gray-800 bg-white dark:bg-[#0c101d] p-6 text-slate-900 dark:text-gray-100 shadow-xl transition-all ${className}`}>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-800/80 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-gray-800 pb-5">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-md shadow-emerald-500/10">
-            <Activity className="size-4.5" />
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-md">
+            <Activity className="size-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-extrabold tracking-tight text-white">System Monitor</h2>
-              <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-400">
+              <h2 className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">ProofPack System Monitor</h2>
+              <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
                 ACTIVE
               </span>
             </div>
-            <p className="text-[11px] text-gray-400 font-medium">
+            <p className="text-xs text-slate-500 dark:text-gray-400 font-medium">
               Real-time resource telemetry & active ProofPack L2 worker threads
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3 font-mono text-xs">
-          <div className="flex items-center gap-1.5 rounded-lg border border-gray-800 bg-gray-900/60 px-3 py-1.5">
-            <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-gray-300 font-semibold">MST PoSA: Healthy</span>
+          <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/60 px-3 py-1.5">
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-slate-700 dark:text-gray-300 font-semibold">MST PoSA: Healthy</span>
           </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-1 rounded-lg border border-gray-800 bg-gray-900 px-3 py-1.5 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900 px-3 py-1.5 text-slate-600 dark:text-gray-400 hover:text-slate-950 dark:hover:text-white transition-colors"
           >
             <span>{isExpanded ? "Collapse Processes" : "Expand Processes"}</span>
             {isExpanded ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
@@ -163,154 +164,165 @@ export function SystemMonitor({
       {/* Main Grid: 4 Core Resource Tiles */}
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Tile 1: CPU Utilization */}
-        <div className="rounded-xl border border-gray-800/90 bg-gray-950/60 p-4 space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400">
+        <div className="rounded-2xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-950/60 p-4 space-y-3">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
             <span className="font-semibold flex items-center gap-1.5">
-              <Cpu className="size-3.5 text-emerald-400" />
+              <Cpu className="size-3.5 text-emerald-500" />
               <span>Sequencer CPU</span>
             </span>
-            <span className="font-mono text-[11px] text-gray-500">8 Cores</span>
+            <span className="font-mono text-[11px] text-slate-400">8 Cores</span>
           </div>
 
           <div className="flex items-baseline justify-between">
             <div>
-              <p className="font-mono text-2xl font-black text-white">{cpuCurrent}%</p>
-              <p className="font-mono text-[10px] text-gray-500">3.40 GHz nominal</p>
+              <p className="font-mono text-2xl font-black text-slate-900 dark:text-white">{cpuCurrent}%</p>
+              <p className="font-mono text-[10px] text-slate-400">3.40 GHz nominal</p>
             </div>
             <div className="overflow-visible pl-2">
-              {renderSparkline(cpuHistory, "#22c55e", 70)}
+              {renderSparkline(cpuHistory, "#10b981", 70)}
             </div>
           </div>
 
-          <div className="h-1.5 w-full rounded-full bg-gray-800/80 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-gray-800 overflow-hidden">
             <div
-              className="h-full rounded-full bg-emerald-400 transition-all duration-500"
-              style={{ width: `${cpuCurrent}%` }}
+              className="h-full bg-emerald-500 transition-all duration-500"
+              style={{ width: `${Math.min(100, cpuCurrent)}%` }}
             />
           </div>
         </div>
 
-        {/* Tile 2: Memory & Heap */}
-        <div className="rounded-xl border border-gray-800/90 bg-gray-950/60 p-4 space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400">
+        {/* Tile 2: Memory / Buffer */}
+        <div className="rounded-2xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-950/60 p-4 space-y-3">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
             <span className="font-semibold flex items-center gap-1.5">
-              <HardDrive className="size-3.5 text-cyan-400" />
-              <span>System Memory</span>
+              <HardDrive className="size-3.5 text-cyan-500" />
+              <span>Mempool Memory</span>
             </span>
-            <span className="font-mono text-[11px] text-gray-500">8.0 GB RAM</span>
-          </div>
-
-          <div>
-            <div className="flex items-baseline justify-between">
-              <p className="font-mono text-2xl font-black text-white">{memCurrent} <span className="text-xs font-normal text-gray-400">GB</span></p>
-              <span className="font-mono text-xs text-cyan-400 font-bold">{Math.round((memCurrent / 8) * 100)}%</span>
-            </div>
-            <p className="font-mono text-[10px] text-gray-500 mt-0.5">
-              Mempool buffer: {mempoolSize} txs queued
-            </p>
-          </div>
-
-          <div className="h-1.5 w-full rounded-full bg-gray-800/80 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-cyan-400 transition-all duration-500"
-              style={{ width: `${(memCurrent / 8) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Tile 3: MST Network RPC Latency */}
-        <div className="rounded-xl border border-gray-800/90 bg-gray-950/60 p-4 space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400">
-            <span className="font-semibold flex items-center gap-1.5">
-              <Wifi className="size-3.5 text-purple-400" />
-              <span>MST RPC Ping</span>
-            </span>
-            <span className="font-mono text-[11px] text-gray-500">Chain 4545</span>
+            <span className="font-mono text-[11px] text-slate-400">4.0 GB Cap</span>
           </div>
 
           <div className="flex items-baseline justify-between">
             <div>
-              <p className="font-mono text-2xl font-black text-white">
-                {latencyHistory[latencyHistory.length - 1]} <span className="text-xs font-normal text-gray-400">ms</span>
+              <p className="font-mono text-2xl font-black text-slate-900 dark:text-white">{memCurrent} GB</p>
+              <p className="font-mono text-[10px] text-slate-400">
+                {((memCurrent / 4.0) * 100).toFixed(0)}% utilized
               </p>
-              <p className="font-mono text-[10px] text-purple-300">Fast finality target</p>
             </div>
-            <div className="overflow-visible pl-2">
-              {renderSparkline(latencyHistory, "#a855f7", 80)}
-            </div>
+            <span className="rounded-full bg-cyan-500/15 border border-cyan-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-cyan-700 dark:text-cyan-400">
+              BUFFER OK
+            </span>
           </div>
 
-          <div className="flex items-center justify-between text-[10px] font-mono text-gray-500">
-            <span>Min: 22ms</span>
-            <span>Avg: 41ms</span>
-            <span>Max: 56ms</span>
+          <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-gray-800 overflow-hidden">
+            <div
+              className="h-full bg-cyan-500 transition-all duration-500"
+              style={{ width: `${(memCurrent / 4.0) * 100}%` }}
+            />
           </div>
         </div>
 
-        {/* Tile 4: Bandwidth In / Out */}
-        <div className="rounded-xl border border-gray-800/90 bg-gray-950/60 p-4 space-y-3">
-          <div className="flex items-center justify-between text-xs text-gray-400">
+        {/* Tile 3: MST RPC Latency */}
+        <div className="rounded-2xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-950/60 p-4 space-y-3">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
             <span className="font-semibold flex items-center gap-1.5">
-              <Server className="size-3.5 text-amber-400" />
-              <span>L2 Wire Throughput</span>
+              <Wifi className="size-3.5 text-purple-500" />
+              <span>MST RPC Latency</span>
             </span>
-            <span className="font-mono text-[11px] text-emerald-400 font-bold">~76% compressed</span>
+            <span className="font-mono text-[11px] text-slate-400">Mario Node</span>
           </div>
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between font-mono text-xs">
-              <span className="text-gray-400 flex items-center gap-1">
-                <ArrowDown className="size-3 text-cyan-400" /> Ingress
-              </span>
-              <span className="font-bold text-white">{networkIn} KB/s</span>
+          <div className="flex items-baseline justify-between">
+            <div>
+              <p className="font-mono text-2xl font-black text-slate-900 dark:text-white">
+                {latencyHistory[latencyHistory.length - 1]} ms
+              </p>
+              <p className="font-mono text-[10px] text-slate-400">Target &lt; 100ms</p>
             </div>
-            <div className="flex items-center justify-between font-mono text-xs">
-              <span className="text-gray-400 flex items-center gap-1">
-                <ArrowUp className="size-3 text-emerald-400" /> Egress
-              </span>
-              <span className="font-bold text-white">{networkOut} KB/s</span>
+            <div className="overflow-visible pl-2">
+              {renderSparkline(latencyHistory, "#a855f7", 90)}
             </div>
           </div>
 
-          <p className="text-[10px] font-mono text-gray-500 pt-1 border-t border-gray-800/60">
-            Binary calldata broadcast to MST L1
-          </p>
+          <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-gray-800 overflow-hidden">
+            <div
+              className="h-full bg-purple-500 transition-all duration-500"
+              style={{ width: `${Math.min(100, (latencyHistory[latencyHistory.length - 1] / 100) * 100)}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Tile 4: Calldata Wire Throughput */}
+        <div className="rounded-2xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-950/60 p-4 space-y-3">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
+            <span className="font-semibold flex items-center gap-1.5">
+              <Server className="size-3.5 text-amber-500" />
+              <span>Calldata Bandwidth</span>
+            </span>
+            <span className="font-mono text-[11px] text-slate-400">L1 Pipeline</span>
+          </div>
+
+          <div className="flex items-center justify-between font-mono">
+            <div>
+              <div className="flex items-center gap-1 text-slate-700 dark:text-gray-200 text-xs">
+                <ArrowDown className="size-3 text-emerald-500" />
+                <span>IN: {networkIn} KB/s</span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-700 dark:text-gray-200 text-xs mt-1">
+                <ArrowUp className="size-3 text-cyan-500" />
+                <span>OUT: {networkOut} KB/s</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="rounded-lg bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-1 text-[10px] font-bold font-mono">
+                ~85% COMPRESSED
+              </span>
+            </div>
+          </div>
+
+          <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-gray-800 overflow-hidden">
+            <div
+              className="h-full bg-amber-500 transition-all duration-500"
+              style={{ width: "42%" }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Expandable Processes & Workers List */}
+      {/* Expandable Processes Table */}
       {isExpanded && (
-        <div className="mt-5 border-t border-gray-800/80 pt-4 space-y-3 animate-in fade-in">
-          <div className="flex items-center justify-between text-xs font-semibold text-gray-400">
-            <span className="flex items-center gap-1.5">
-              <Terminal className="size-3.5 text-emerald-400" />
-              <span>Active Sequencer Daemons & Worker Threads</span>
-            </span>
-            <span className="font-mono text-[11px]">{processes.length} active threads</span>
+        <div className="mt-6 border-t border-slate-200 dark:border-gray-800 pt-5 space-y-3 animate-in fade-in">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              Active ProofPack Subsystems ({processes.length})
+            </h3>
+            <span className="text-[11px] font-mono text-slate-400">Polled every 2,000ms</span>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-gray-800">
             <table className="w-full text-left font-mono text-xs">
-              <thead className="border-b border-gray-800 bg-gray-900/50 text-[11px] text-gray-500">
+              <thead className="border-b border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/80 text-slate-500 dark:text-gray-400">
                 <tr>
-                  <th className="p-2.5">Daemon Name</th>
-                  <th className="p-2.5">Module Role</th>
-                  <th className="p-2.5">CPU %</th>
-                  <th className="p-2.5">Memory</th>
-                  <th className="p-2.5">Uptime</th>
-                  <th className="p-2.5 text-right">State</th>
+                  <th className="p-3">Process ID</th>
+                  <th className="p-3">Role / Responsibility</th>
+                  <th className="p-3">CPU Usage</th>
+                  <th className="p-3">Memory</th>
+                  <th className="p-3">Uptime</th>
+                  <th className="p-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/60 text-[11px]">
+              <tbody className="divide-y divide-slate-100 dark:divide-gray-800/80">
                 {processes.map(proc => (
-                  <tr key={proc.id} className="hover:bg-gray-900/30 transition-colors">
-                    <td className="p-2.5 font-bold text-gray-200">{proc.name}</td>
-                    <td className="p-2.5 font-sans text-gray-400">{proc.role}</td>
-                    <td className="p-2.5 text-emerald-400 font-semibold">{proc.cpu}%</td>
-                    <td className="p-2.5 text-gray-300">{proc.memory}</td>
-                    <td className="p-2.5 text-gray-500">{proc.uptime}</td>
-                    <td className="p-2.5 text-right">
-                      <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[9px] font-bold text-emerald-400 uppercase">
+                  <tr key={proc.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-gray-900/40">
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-emerald-500" />
+                      <span>{proc.name}</span>
+                    </td>
+                    <td className="p-3 text-slate-600 dark:text-gray-300 font-sans">{proc.role}</td>
+                    <td className="p-3 text-emerald-600 dark:text-emerald-400 font-bold">{proc.cpu}%</td>
+                    <td className="p-3 text-slate-700 dark:text-gray-300">{proc.memory}</td>
+                    <td className="p-3 text-slate-400">{proc.uptime}</td>
+                    <td className="p-3">
+                      <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase">
                         {proc.status}
                       </span>
                     </td>

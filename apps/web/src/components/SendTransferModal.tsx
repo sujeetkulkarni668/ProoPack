@@ -94,22 +94,22 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-lg bg-[#0e1424] border border-mst-border rounded-2xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/75 backdrop-blur-sm animate-in fade-in">
+      <div className="w-full max-w-lg bg-white dark:bg-[#0e1424] border border-slate-200 dark:border-mst-border rounded-3xl shadow-2xl overflow-hidden text-slate-900 dark:text-white transition-colors">
         {/* Header */}
-        <div className="p-6 border-b border-mst-border flex items-center justify-between">
+        <div className="p-6 border-b border-slate-200 dark:border-mst-border flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Send className="w-5 h-5 text-brand-400" />
+            <h3 className="text-lg font-bold flex items-center gap-2">
+              <Send className="w-5 h-5 text-emerald-600 dark:text-brand-400" />
               <span>Submit ProofPack L2 Transfer</span>
             </h3>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
               Gasless off-chain authorization signed via BridgeKey
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-gray-400 hover:text-slate-950 dark:hover:text-white flex items-center justify-center transition-colors"
           >
             ✕
           </button>
@@ -118,22 +118,22 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-start gap-2.5">
+            <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {resultTxId && (
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs space-y-1.5">
-              <div className="flex items-center gap-2 font-bold text-emerald-400">
+            <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs space-y-1.5 animate-in fade-in">
+              <div className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Transaction Queued in Mempool!</span>
               </div>
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-slate-600 dark:text-gray-400">
                 Assigned deterministic TxID. Awaiting batch assembly and compression:
               </p>
-              <div className="p-2 rounded bg-black/40 font-mono text-[11px] break-all text-emerald-400">
+              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-black/40 font-mono text-[11px] break-all text-emerald-600 dark:text-emerald-400">
                 {resultTxId}
               </div>
             </div>
@@ -141,73 +141,73 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
 
           {/* Sender */}
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1">
-              Authorized Sender (Connected Wallet)
+            <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+              Sender Address (BridgeKey Wallet)
             </label>
             <input
               type="text"
               readOnly
-              value={senderAddress || 'Wallet not connected'}
-              className="w-full px-3.5 py-2.5 rounded-lg bg-gray-900 border border-mst-border text-xs font-mono text-gray-300 focus:outline-none"
+              value={senderAddress || 'Not connected'}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-xs font-mono text-slate-700 dark:text-gray-300 cursor-not-allowed"
             />
           </div>
 
           {/* Recipient */}
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1">
-              Recipient Address (MST / EVM)
+            <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+              Recipient Address (MST EVM)
             </label>
             <input
               type="text"
               value={to}
               onChange={e => setTo(e.target.value)}
               placeholder="0x..."
-              required
-              className="w-full px-3.5 py-2.5 rounded-lg bg-gray-900/60 border border-mst-border focus:border-brand-500 text-xs font-mono text-white placeholder-gray-600 focus:outline-none transition-colors"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
             />
           </div>
 
           {/* Amount & Fee */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">
-                Transfer Amount (MSTC)
+              <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+                Amount (MSTC)
               </label>
               <input
                 type="text"
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
-                required
-                className="w-full px-3.5 py-2.5 rounded-lg bg-gray-900/60 border border-mst-border focus:border-brand-500 text-xs font-mono text-white focus:outline-none transition-colors"
+                placeholder="0.1"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">
-                Batcher Fee (MSTC)
+              <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+                L2 Batch Fee (MSTC)
               </label>
               <input
                 type="text"
                 value={fee}
                 onChange={e => setFee(e.target.value)}
-                required
-                className="w-full px-3.5 py-2.5 rounded-lg bg-gray-900/60 border border-mst-border focus:border-brand-500 text-xs font-mono text-white focus:outline-none transition-colors"
+                placeholder="0.0001"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
               />
             </div>
           </div>
 
           {/* Nonce */}
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1">
-              Account Sequence Nonce
+            <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+              Sequence Nonce
             </label>
             <input
               type="number"
               value={nonce}
-              onChange={e => setNonce(parseInt(e.target.value, 10) || 0)}
-              required
-              min={0}
-              className="w-full px-3.5 py-2.5 rounded-lg bg-gray-900/60 border border-mst-border focus:border-brand-500 text-xs font-mono text-white focus:outline-none transition-colors"
+              onChange={e => setNonce(parseInt(e.target.value, 10))}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
             />
+            <p className="text-[10px] text-slate-500 dark:text-gray-400 mt-1">
+              Strict monotonically increasing counter to prevent replay attacks
+            </p>
           </div>
 
           {/* Submit Button */}
@@ -215,17 +215,17 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
             <button
               type="submit"
               disabled={loading || !senderAddress}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-500 hover:to-emerald-400 disabled:opacity-50 text-gray-950 font-bold text-sm shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-500 hover:to-emerald-400 disabled:opacity-50 text-gray-950 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Requesting BridgeKey Authorization...</span>
+                  <span>Signing via BridgeKey...</span>
                 </>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>Sign & Submit to ProofPack</span>
+                  <span>Sign & Enqueue to L2 Mempool (0 L1 Gas)</span>
                 </>
               )}
             </button>
@@ -235,3 +235,5 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
     </div>
   );
 };
+
+export default SendTransferModal;

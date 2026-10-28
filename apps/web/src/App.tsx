@@ -4,6 +4,7 @@ import { Sidebar, PageId } from './components/Sidebar';
 import { WalletModal } from './components/WalletModal';
 import { SendTransferModal } from './components/SendTransferModal';
 import { Overview } from './pages/Overview';
+import { LearningLab } from './pages/LearningLab';
 import { TransactionsPage } from './pages/Transactions';
 import { BatchExplorer } from './pages/BatchExplorer';
 import { CostAnalyticsPage } from './pages/CostAnalytics';
@@ -11,6 +12,7 @@ import { DeveloperPortalPage } from './pages/DeveloperPortal';
 import { NetworkStatusPage } from './pages/NetworkStatus';
 import { SettingsPage } from './pages/Settings';
 import { useWallet } from './hooks/useWallet';
+import { useTheme } from './hooks/useTheme';
 import {
   fetchHealth,
   fetchTransactions,
@@ -24,6 +26,9 @@ export const App: React.FC = () => {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null);
+
+  // Theme Hook (Dark & Light)
+  const { theme, toggleTheme } = useTheme();
 
   // Data states
   const [transactions, setTransactions] = useState<L2Transaction[]>([]);
@@ -77,15 +82,18 @@ export const App: React.FC = () => {
   const pendingCount = transactions.filter(t => t.status === 'QUEUED' || t.status === 'SUBMITTED').length;
 
   return (
-    <div className="min-h-screen bg-[#0a0f1d] text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1d] text-slate-900 dark:text-gray-100 flex flex-col transition-colors">
       <Navbar
         address={address}
         chainId={chainId}
         isConnected={isConnected}
         isBridgeKey={isBridgeKey}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onOpenWalletModal={() => setIsWalletModalOpen(true)}
         onDisconnect={disconnect}
         onOpenSendModal={() => setIsSendModalOpen(true)}
+        onOpenLearnModal={() => setCurrentPage('learn')}
       />
 
       <div className="flex-1 flex overflow-hidden">
@@ -95,7 +103,7 @@ export const App: React.FC = () => {
           pendingCount={pendingCount}
         />
 
-        <main className="flex-1 overflow-y-auto p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 overflow-y-auto p-6 sm:p-8 max-w-7xl mx-auto w-full">
           {currentPage === 'overview' && (
             <Overview
               transactions={transactions}
@@ -109,6 +117,8 @@ export const App: React.FC = () => {
               chainId={chainId}
             />
           )}
+
+          {currentPage === 'learn' && <LearningLab />}
 
           {currentPage === 'transactions' && (
             <TransactionsPage
@@ -161,3 +171,5 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
+export default App;
