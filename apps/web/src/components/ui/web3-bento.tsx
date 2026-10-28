@@ -58,6 +58,7 @@ export interface Web3BentoProps {
   accent2?: string;
   locale?: string;
   className?: string;
+  onOpenSendModal?: () => void;
 }
 
 /* ------------------------------------------------------------------ */
@@ -987,6 +988,7 @@ export function Web3Bento({
   accent2 = "oklch(0.74 0.12 300)",
   locale = "en-US",
   className,
+  onOpenSendModal,
 }: Web3BentoProps) {
   const reduced = useReducedMotion();
   const fmt = React.useMemo<Fmt>(() => {
@@ -1007,6 +1009,14 @@ export function Web3Bento({
       {/* Top bar */}
       <nav className="mb-3 flex flex-wrap items-center justify-end gap-3 px-1" aria-label="Dashboard">
         <div className="flex items-center gap-2">
+          {onOpenSendModal && (
+            <button
+              onClick={onOpenSendModal}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 transition-colors"
+            >
+              <span>+ Send L2 Tx</span>
+            </button>
+          )}
           <span className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-[12px] font-medium">
             <span className="size-2 rounded-full" style={{ background: accent }} aria-hidden />
             {network}
