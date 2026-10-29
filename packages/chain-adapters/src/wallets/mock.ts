@@ -14,7 +14,7 @@ export class MockWalletAdapter implements IWalletAdapter {
 
   constructor(
     privateKey: Hex = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    initialChainId: number = 4545
+    initialChainId: number = 91562037
   ) {
     this.account = privateKeyToAccount(privateKey);
     this.currentChainId = initialChainId;

@@ -193,7 +193,7 @@ export const LearningLab: React.FC = () => {
   "domain": {
     "name": "ProofPack L2",
     "version": "1",
-    "chainId": 4545
+    "chainId": 91562037
   },
   "message": {
     "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",

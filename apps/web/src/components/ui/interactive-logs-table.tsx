@@ -43,7 +43,7 @@ export const DEMO_LOGS: LogEntry[] = [
     level: "info",
     service: "BRIDGEKEY",
     message: "EIP-712 structured signature verified for account 0xf39F...2266",
-    payload: { sender: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", chainId: 4545, nonce: 4 }
+    payload: { sender: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", chainId: 91562037, nonce: 4 }
   },
   {
     id: "l5",

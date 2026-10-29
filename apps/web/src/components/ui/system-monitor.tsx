@@ -54,7 +54,7 @@ export function SystemMonitor({
 
   const [processes, setProcesses] = useState<AgentProcess[]>([
     { id: "p1", name: "proofpack-batcher-worker", role: "Varint Compression & Aggregation", cpu: 14.2, memory: "412 MB", status: "active", uptime: "4h 18m" },
-    { id: "p2", name: "mst-posa-rpc-sync", role: "MST Testnet JSON-RPC Sync (4545)", cpu: 6.8, memory: "256 MB", status: "active", uptime: "18h 02m" },
+    { id: "p2", name: "mst-posa-rpc-sync", role: "MST Testnet JSON-RPC Sync (91562037)", cpu: 6.8, memory: "256 MB", status: "active", uptime: "18h 02m" },
     { id: "p3", name: "bridgekey-auth-verifier", role: "EIP-712 ECDSA Signature Pipeline", cpu: 4.1, memory: "188 MB", status: "idle", uptime: "4h 18m" },
     { id: "p4", name: "merkle-tree-prover", role: "Keccak256 State Tree Commitment", cpu: 3.3, memory: "144 MB", status: "idle", uptime: "2d 11h" },
   ]);

@@ -12,7 +12,7 @@ describe('Chain Adapters & BridgeKey Interface', () => {
     const res = await adapter.connect();
 
     assert.ok(res.address.startsWith('0x'));
-    assert.strictEqual(res.chainId, 4545);
+    assert.strictEqual(res.chainId, 91562037);
     assert.strictEqual(adapter.getAddress(), res.address);
   });
 
@@ -29,12 +29,12 @@ describe('Chain Adapters & BridgeKey Interface', () => {
       validUntil: 1800000000
     };
 
-    const signature = await adapter.signTransfer(payload, 4545, verifyingContract);
+    const signature = await adapter.signTransfer(payload, 91562037, verifyingContract);
     assert.ok(signature.startsWith('0x'));
     assert.strictEqual(signature.length, 132);
 
     // Verify signature using our crypto recovery
-    const isValid = await verifyTransferSignature(payload, signature as Hex, 4545, verifyingContract);
+    const isValid = await verifyTransferSignature(payload, signature as Hex, 91562037, verifyingContract);
     assert.strictEqual(isValid, true, 'Recovered address must match sender');
   });
 
@@ -52,9 +52,9 @@ describe('Chain Adapters & BridgeKey Interface', () => {
     };
 
     await assert.rejects(async () => {
-      // Wallet is on 4545, but request targets 4646
+      // Wallet is on 91562037, but request targets 4646
       await adapter.signTransfer(payload, 4646, verifyingContract);
-    }, /Mock chain 4545 != expected 4646/);
+    }, /Mock chain 91562037 != expected 4646/);
   });
 
   it('handles user rejection gracefully with typed error', async () => {

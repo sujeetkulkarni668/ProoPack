@@ -27,8 +27,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLearnModal
 }) => {
   const getNetworkName = (id: number | null) => {
-    if (id === 4646) return { name: 'MST Mainnet', color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
-    if (id === 4545) return { name: 'MST Testnet', color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30' };
+    if (id === 4646) return { name: 'MST Mainnet (4646)', color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
+    if (id === 91562037 || id === 4545) return { name: 'MST Testnet (91562037)', color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30' };
     if (id === 31337) return { name: 'Local Devnet', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30' };
     return { name: `Chain ${id || 'Offline'}`, color: 'bg-slate-200 dark:bg-gray-800 text-slate-600 dark:text-gray-400 border-slate-300 dark:border-gray-700' };
   };
@@ -68,6 +68,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>How L2 Works</span>
           </button>
         )}
+
+        {/* Faucet Link Button */}
+        <a
+          href="https://coral-faucet.mstblockchain.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-xs font-semibold transition-colors"
+          title="Claim Free Testnet Tokens from Coral Faucet"
+        >
+          <span>Free Faucet</span>
+        </a>
 
         {/* Network Badge */}
         <div className={`px-3 py-1 rounded-lg border text-xs font-semibold flex items-center gap-2 ${net.color}`}>

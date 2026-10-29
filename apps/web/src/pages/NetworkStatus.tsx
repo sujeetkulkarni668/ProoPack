@@ -49,11 +49,11 @@ export const NetworkStatusPage: React.FC<NetworkStatusProps> = ({ health, onRefr
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-gray-900/60 border border-slate-200 dark:border-gray-800 space-y-2">
             <span className="text-slate-500 dark:text-gray-400 text-[11px] uppercase tracking-wider block font-sans font-semibold">
-              MST Testnet Configuration (Verified)
+              MST Testnet Configuration (Verified Coral Testnet)
             </span>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-gray-400">Chain ID:</span>
-              <span className="text-slate-900 dark:text-white font-bold">4545 (0x11F1)</span>
+              <span className="text-slate-900 dark:text-white font-bold">91562037 (0x5752035)</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-gray-400">Native Asset:</span>
@@ -66,6 +66,30 @@ export const NetworkStatusPage: React.FC<NetworkStatusProps> = ({ health, onRefr
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-gray-400">Consensus:</span>
               <span className="text-cyan-600 dark:text-cyan-400">PoSA (~3.0s Block Time)</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500 dark:text-gray-400">Explorer:</span>
+              <a href="https://testnet.mstscan.com" target="_blank" rel="noopener noreferrer" className="text-cyan-600 dark:text-cyan-400 hover:underline">
+                https://testnet.mstscan.com
+              </a>
+            </div>
+            <div className="pt-2 flex flex-wrap gap-2 font-sans">
+              <a
+                href="https://coral-faucet.mstblockchain.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-colors"
+              >
+                🚰 Coral Faucet (Free tMSTC)
+              </a>
+              <a
+                href="https://chainlist.org/chain/91562037"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-700 dark:text-cyan-400 text-xs font-bold hover:bg-cyan-500/25 transition-colors"
+              >
+                🔗 Chainlist Testnet (91562037)
+              </a>
             </div>
           </div>
 
@@ -87,7 +111,27 @@ export const NetworkStatusPage: React.FC<NetworkStatusProps> = ({ health, onRefr
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-gray-400">Explorer:</span>
-              <span className="text-cyan-600 dark:text-cyan-400">https://mstscan.com</span>
+              <a href="https://mstscan.com" target="_blank" rel="noopener noreferrer" className="text-cyan-600 dark:text-cyan-400 hover:underline">
+                https://mstscan.com
+              </a>
+            </div>
+            <div className="pt-2 flex flex-wrap gap-2 font-sans">
+              <a
+                href="https://chainlist.org/chain/4646"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-colors"
+              >
+                🔗 Chainlist Mainnet (4646)
+              </a>
+              <a
+                href="https://mstblockchain.com/contact/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-500/25 transition-colors"
+              >
+                📝 Request Mainnet Tokens
+              </a>
             </div>
           </div>
         </div>

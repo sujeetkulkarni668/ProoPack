@@ -21,12 +21,14 @@ This report establishes the verified network specifications, execution environme
 
 | Property | MST Mainnet (Verified) | MST Testnet (Verified) | Local Development (Verified) |
 | :--- | :--- | :--- | :--- |
-| **Network Name** | MST Mainnet | MST Testnet | ProofPack Local Devnet |
-| **Chain ID (Decimal)** | `4646` | `4545` | `31337` |
-| **Chain ID (Hex)** | `0x1226` | `0x11F1` | `0x7A69` |
+| **Network Name** | MST Mainnet | MST Coral Testnet | ProofPack Local Devnet |
+| **Chain ID (Decimal)** | `4646` | `91562037` | `31337` |
+| **Chain ID (Hex)** | `0x1226` | `0x5752035` | `0x7A69` |
 | **Native Currency** | MSTC (18 decimals) | tMSTC (18 decimals) | ETH / tMSTC (18 decimals) |
 | **RPC Endpoint** | `https://mariorpc.mstblockchain.com`<br>*(Alt: `https://craftrpc.mstblockchain.com`)* | `https://testnetrpc.mstblockchain.com` | `http://127.0.0.1:8545` |
-| **Block Explorer** | `https://mstscan.com` | Testnet Portal / Explorer | Local Console / In-memory |
+| **Block Explorer** | [mstscan.com](https://mstscan.com) | [testnet.mstscan.com](https://testnet.mstscan.com) | Local Console / In-memory |
+| **Faucet** | [Request Form](https://mstblockchain.com/contact/) | [coral-faucet.mstblockchain.com](https://coral-faucet.mstblockchain.com/) | Built-in |
+| **Chainlist Entry** | [chainlist.org/chain/4646](https://chainlist.org/chain/4646) | [chainlist.org/chain/91562037](https://chainlist.org/chain/91562037) | N/A |
 | **Consensus Mechanism** | Proof of Stake Authority (PoSA) | Proof of Stake Authority (PoSA) | Instant / Automine |
 | **Block Time** | ~3 seconds | ~3 seconds | Instant (configurable) |
 | **Finality Behavior** | Probabilistic with fast finality (~2 epochs) | Fast finality | Instant deterministic |
@@ -80,8 +82,8 @@ This report establishes the verified network specifications, execution environme
 
 | Finding | Classification | Rationale & Handling |
 | :--- | :--- | :--- |
-| MST Mainnet Chain ID `4646` & RPC | **Verified** | Publicly accessible RPC and chain registry. |
-| MST Testnet Chain ID `4545` & RPC | **Verified** | Testnet RPC live and documented. |
+| MST Mainnet Chain ID `4646` & RPC | **Verified** | Publicly accessible RPC and Chainlist registry (chainlist.org/chain/4646). |
+| MST Testnet Chain ID `91562037` & RPC | **Verified** | Coral Testnet RPC live and verified via eth_chainId (chainlist.org/chain/91562037). |
 | Solidity `^0.8.20` on MST | **Verified** | Standard EVM opcodes supported by PoSA L1. |
 | BridgeKey EIP-1193 / EIP-6963 Injection | **Verified** | Standard multi-chain web3 extension architecture. |
 | Custom L2 Settlement Contract Support | **Verified** | Deployable as standard Solidity contract on MST. |
@@ -93,7 +95,7 @@ This report establishes the verified network specifications, execution environme
 ## 7. Conclusion & Next Steps
 
 ProofPack will implement:
-1. `contracts/ProofPackSettlement.sol` targeted to EVM / Solidity `^0.8.20` deployable to MST Testnet (Chain ID 4545) and MST Mainnet (Chain ID 4646).
+1. `contracts/ProofPackSettlement.sol` targeted to EVM / Solidity `^0.8.20` deployable to MST Coral Testnet (Chain ID 91562037) and MST Mainnet (Chain ID 4646).
 2. A deterministic Merkle batch commitment engine and binary compression pipeline.
 3. BridgeKey Wallet adapter adhering to EIP-1193 and EIP-6963 standards.
 4. A local testnet mock environment ensuring 100% reproducible tests without requiring mainnet funds.

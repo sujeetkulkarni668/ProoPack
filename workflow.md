@@ -1,6 +1,6 @@
 # ProofPack Protocol & Architecture Workflow
 
-**ProofPack** is a full-stack Layer 2 Transaction Optimization and Aggregation Platform engineered specifically for the **MST Blockchain** (Chain ID: `4646` Mainnet, `4545` Testnet) with native **BridgeKey Wallet** integration (EIP-1193 / EIP-712).
+**ProofPack** is a full-stack Layer 2 Transaction Optimization and Aggregation Platform engineered specifically for the **MST Blockchain** (Chain ID: `4646` Mainnet, `91562037` Coral Testnet) with native **BridgeKey Wallet** integration (EIP-1193 / EIP-712).
 
 This document details the complete end-to-end operational workflow, cryptographic pipeline, data compression mechanics, on-chain settlement procedures, and user experience workflows.
 
@@ -28,7 +28,7 @@ flowchart TD
         Codec -->|Dense Calldata| Settler[L2 Batch Settler Worker]
         Merkle -->|32-byte Merkle Root R| Settler
         Settler -->|commitBatch(seq, count, root, calldata)| SC[ProofPackSettlement.sol]
-        SC -->|Emits BatchSettled event| MST[MST Blockchain EVM (Chain ID 4545/4646)]
+        SC -->|Emits BatchSettled event| MST[MST Blockchain EVM (Chain ID 4646 / 91562037)]
     end
 
     subgraph Verification ["4. Client Proofs & Observability"]
@@ -59,7 +59,7 @@ flowchart TD
      "domain": {
        "name": "ProofPack L2",
        "version": "1",
-       "chainId": 4545,
+       "chainId": 91562037,
        "verifyingContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
      },
      "message": {

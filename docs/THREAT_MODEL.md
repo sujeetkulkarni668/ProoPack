@@ -16,7 +16,7 @@ ProofPack handles off-chain transaction ingestion, batching, cryptographic commi
 
 | Threat Vector | Description | ProofPack Mitigation |
 | :--- | :--- | :--- |
-| **Signature Forgery** | Attacker crafts a transfer payload with a fake signature. | Strict EIP-712 structured typed data validation (`secp256k1` ecrecover). Domain separator binds to MST chain ID (4646 / 4545) and contract address. |
+| **Signature Forgery** | Attacker crafts a transfer payload with a fake signature. | Strict EIP-712 structured typed data validation (`secp256k1` ecrecover). Domain separator binds to MST chain ID (4646 / 91562037) and contract address. |
 | **Replay Across Chains** | An authorized signature from MST Testnet is replayed on MST Mainnet. | EIP-712 domain separator includes explicit `chainId`. Cross-chain replay causes signature verification failure. |
 | **Nonce Desynchronization & Double Spending** | Attacker submits concurrent transactions with identical or out-of-order nonces. | Sequential nonce validation enforced atomically in transaction processing database. Rejects nonces $\neq$ expected sender nonce. |
 | **Batch Ordering Tampering** | Malicious actor attempts to inject or reorder transactions inside a settled batch. | Deterministic Merkle tree roots committed on MST L1 contract. Contract checks monotonic `batchId == nextBatchId` and stores immutable `batchRoot`. |

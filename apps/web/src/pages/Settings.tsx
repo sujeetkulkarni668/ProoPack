@@ -9,7 +9,7 @@ interface SettingsProps {
 export const SettingsPage: React.FC<SettingsProps> = ({ onSwitchChain, currentChainId }) => {
   const [maxBatchSize, setMaxBatchSize] = useState(64);
   const [maxWaitMs, setMaxWaitMs] = useState(3000);
-  const [selectedChain, setSelectedChain] = useState(currentChainId || 4545);
+  const [selectedChain, setSelectedChain] = useState(currentChainId || 91562037);
   const [saved, setSaved] = useState(false);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -50,7 +50,7 @@ export const SettingsPage: React.FC<SettingsProps> = ({ onSwitchChain, currentCh
             onChange={e => setSelectedChain(parseInt(e.target.value, 10))}
             className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-gray-900 border border-slate-200 dark:border-mst-border text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 transition-colors"
           >
-            <option value={4545}>MST Testnet (Chain ID 4545, tMSTC)</option>
+            <option value={91562037}>MST Testnet (Chain ID 91562037, Coral Faucet)</option>
             <option value={4646}>MST Mainnet (Chain ID 4646, MSTC)</option>
             <option value={31337}>ProofPack Local Devnet (Chain ID 31337)</option>
           </select>

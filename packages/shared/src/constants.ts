@@ -25,11 +25,13 @@ export const MST_NETWORKS = {
       'https://mariorpc.mstblockchain.com',
       'https://craftrpc.mstblockchain.com'
     ],
-    blockExplorerUrls: ['https://mstscan.com']
+    blockExplorerUrls: ['https://mstscan.com'],
+    chainlistUrl: 'https://chainlist.org/chain/4646',
+    tokenRequestUrl: 'https://mstblockchain.com/contact/'
   },
   TESTNET: {
-    chainId: 4545,
-    hexChainId: '0x11F1',
+    chainId: 91562037,
+    hexChainId: '0x5752035',
     name: 'MST Testnet',
     currency: {
       name: 'Testnet MST Coin',
@@ -37,7 +39,12 @@ export const MST_NETWORKS = {
       decimals: 18
     },
     rpcUrls: ['https://testnetrpc.mstblockchain.com'],
-    blockExplorerUrls: ['https://testnet.mstscan.com']
+    blockExplorerUrls: ['https://testnet.mstscan.com'],
+    faucetUrls: [
+      'https://coral-faucet.mstblockchain.com/',
+      'https://faucet.mstblockchain.com'
+    ],
+    chainlistUrl: 'https://chainlist.org/chain/91562037'
   },
   LOCAL: {
     chainId: 31337,

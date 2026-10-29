@@ -54,5 +54,5 @@ The Vite development server starts on `http://localhost:3000`.
 2. Open the ProofPack Dashboard at `http://localhost:3000`.
 3. Click **Connect Wallet** in the top-right corner.
 4. Select **BridgeKey Wallet**.
-5. Approve the connection. ProofPack automatically detects whether your wallet is on MST Mainnet (4646), MST Testnet (4545), or prompts you to switch.
+5. Approve the connection. ProofPack automatically detects whether your wallet is on MST Mainnet (4646), MST Coral Testnet (91562037), or prompts you to switch.
 6. Click **Submit L2 Tx** to compose and sign a gasless EIP-712 transaction!

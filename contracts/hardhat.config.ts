@@ -17,7 +17,7 @@ const config: HardhatUserConfig = {
     },
     mstTestnet: {
       url: process.env.MST_RPC_URL || 'https://testnetrpc.mstblockchain.com',
-      chainId: 4545,
+      chainId: 91562037,
       accounts: process.env.OPERATOR_PRIVATE_KEY ? [process.env.OPERATOR_PRIVATE_KEY] : []
     },
     mstMainnet: {

@@ -39,8 +39,8 @@ export const Overview: React.FC<OverviewProps> = ({
   const networkLabel =
     chainId === 4646
       ? 'MST Mainnet (4646)'
-      : chainId === 4545
-      ? 'MST Testnet (4545)'
+      : chainId === 91562037 || chainId === 4545
+      ? 'MST Testnet (91562037)'
       : 'ProofPack Devnet (31337)';
 
   const accountDisplay = address

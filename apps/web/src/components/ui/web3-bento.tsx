@@ -508,7 +508,7 @@ function SettlementContractTile() {
 
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-slate-500 dark:text-gray-400">Target Chain</span>
-          <span className="font-semibold">4545 (Testnet)</span>
+          <span className="font-semibold">91562037 (Coral Testnet)</span>
         </div>
 
         <div className="rounded-lg border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/60 p-2.5 text-[11px]">
@@ -702,7 +702,7 @@ function ActivityTile({
 
 export function Web3Bento({
   account = "bridgekey.mst",
-  network = "MST Testnet (4545)",
+  network = "MST Testnet (91562037)",
   transactions = [],
   batches = [],
   analytics,

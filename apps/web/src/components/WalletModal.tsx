@@ -109,7 +109,7 @@ export const WalletModal: React.FC<WalletModalProps> = ({
 
         {/* Footer info */}
         <div className="p-4 bg-slate-50 dark:bg-gray-900/80 border-t border-slate-200 dark:border-mst-border text-[11px] text-slate-500 dark:text-gray-400 flex items-center justify-between">
-          <span>Target Chain: MST Testnet (4545)</span>
+          <span>Target Chain: MST Testnet (91562037)</span>
           <span className="font-mono text-emerald-600 dark:text-brand-400">EIP-712 Zero Gas</span>
         </div>
       </div>
