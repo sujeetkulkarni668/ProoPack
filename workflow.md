@@ -214,3 +214,34 @@ npm run test:all
 ```powershell
 npm run benchmark
 ```
+
+
+---
+
+## 7. Complete Blockchain Explorer & Analytics Platform (Upgrade)
+
+ProofPack features a full-fledged Layer 2 explorer combining the inspection capabilities of Etherscan, the channel routing views of Lightning network explorers, dense batch inspection, and developer telemetry.
+
+### Implemented Sidebar Navigation & Routes
+
+| Module Section | Page Route | Purpose & Implementation |
+|---|---|---|
+| **Overview** | `dashboard` | 8 Main stats cards (Volume, TPS, Batches, Proofs, Confirmation, Compression, Cost Savings, Bytes Saved) + interactive telemetry charts across 1h/24h/7d/30d |
+| **Overview** | `network-statistics` | Dedicated performance page: avg/median/p95 latency percentiles, throughput peaks, bytes processed vs saved |
+| **Overview** | `network-history` | Historical timeline analytics, hourly/daily aggregation switch, epoch checkpoints |
+| **Explorer** | `transactions` | High-density transaction registry with filters (status, batch, address) + 5-stage lifecycle inspection modal (Overview, Timeline, Compression, Fee breakdown, Settlement, Raw JSON) |
+| **Explorer** | `blocks-batches` | Dual-view separating underlying MST Blockchain blocks from ProofPack L2 aggregation batches |
+| **Explorer** | `addresses` | Account balance lookup (native tMSTC via live RPC + PPC vouchers + tUSDT) + incoming/outgoing transfer ledger |
+| **Explorer** | `tokens-transfers` | Token registry for MST assets (native gas, PPC vouchers, bridged ERC-20s) + transfer log |
+| **ProofPack Technology** | `batch-explorer` | Binary payload inspection, address dictionary deduplication breakdown, and state commitments |
+| **ProofPack Technology** | `proof-explorer` | Cryptographic Merkle tree inclusion proof auditor with real-time interactive verification tool |
+| **ProofPack Technology** | `compression-analytics` | Empirical gas comparison model and interactive batch size amortization simulator |
+| **ProofPack Technology** | `settlement-history` | On-chain settlement tracking on MST EVM with MSTScan explorer links |
+| **Wallet** | `wallet` | BridgeKey wallet management, chain validation, and client-side EIP-712 signing interface |
+| **Developer Tools** | `developer-docs` | REST API documentation, request/response schemas, and cURL commands |
+| **Developer Tools** | `developer-sdk` | TypeScript SDK examples with `@proofpack/chain-adapters` and `@proofpack/crypto` |
+| **Developer Tools** | `developer-webhooks` | Real-time push event subscriptions and test payload simulator |
+| **Developer Tools** | `developer-usage` | API quota telemetry, rate-limit meter, and endpoint traffic distribution |
+| **System** | `system-status` | Real-time service monitor (API, Worker, Prover, Queue, MST RPC latency) |
+| **System** | `settings` | Network switcher, theme toggle, table density, and RPC configuration |
+| **Learner Lab** | `learn` | Interactive 5-step visualizer for blockchain learners |

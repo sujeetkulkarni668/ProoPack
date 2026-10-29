@@ -41,6 +41,7 @@ export interface BatchMetadata {
   totalFees: string;
   createdAt: number;
   settledAt?: number;
+  error?: string;
 }
 
 export interface CostAnalyticsData {
@@ -63,4 +64,168 @@ export interface HealthResponse {
     blockNumber?: string;
   };
   workerRunning: boolean;
+}
+
+export interface NetworkStatsResponse {
+  totalTransactions: number;
+  settledTransactions: number;
+  queuedTransactions: number;
+  tps: {
+    current: number;
+    average: number;
+    peak: number;
+  };
+  batches: {
+    total: number;
+    settled: number;
+    queued: number;
+    failed: number;
+  };
+  proofSuccessRate: number;
+  confirmationTime: {
+    l2ProcessingMs: number;
+    l1SettlementSec: number;
+  };
+  compression: {
+    ratio: number;
+    sizeReductionPct: number;
+    totalBytesProcessed: number;
+    totalBytesSaved: number;
+  };
+  savings: {
+    percentage: number;
+    baselineGasPerTx: number;
+    proofPackGasPerTx: number;
+    averageFeeMSTC: string;
+  };
+}
+
+export interface NetworkHistoryPoint {
+  timestamp: number;
+  label: string;
+  transactions: number;
+  batches: number;
+  tps: number;
+  avgFeeMSTC: number;
+  compressionRatio: number;
+  avgConfirmationMs: number;
+  proofsVerified: number;
+  settlementSuccessRate: number;
+}
+
+export interface NetworkHistoryResponse {
+  timeframe: string;
+  history: NetworkHistoryPoint[];
+}
+
+export interface BlockInfo {
+  blockNumber: number;
+  blockHash: string;
+  parentHash: string;
+  timestamp: number;
+  txCount: number;
+  proposer: string;
+  gasUsed: number;
+  gasLimit: number;
+  finality: string;
+  isSettlementCarrier: boolean;
+}
+
+export interface AddressDetails {
+  address: string;
+  addressType: string;
+  nativeBalanceMSTC: string;
+  tokenBalances: Array<{
+    symbol: string;
+    name: string;
+    balance: string;
+    decimals: number;
+  }>;
+  txCountIncoming: number;
+  txCountOutgoing: number;
+  transactions: L2Transaction[];
+  associatedBatches: number[];
+}
+
+export interface TokenInfo {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: number;
+  totalSupply: string;
+  holderCount: number;
+  transferCount: number;
+  isNative: boolean;
+  faucetUrl?: string;
+}
+
+export interface ProofRecord {
+  proofId: string;
+  batchId: number;
+  txIndex: number;
+  txId: string;
+  sender: string;
+  recipient: string;
+  amount: string;
+  leafHash: string;
+  batchRoot: string;
+  proofLength: number;
+  proofSiblings: string[];
+  proofType: string;
+  verifierContract: string;
+  verified: boolean;
+  verificationDurationMs: number;
+  timestamp: number;
+  l1TxHash?: string;
+}
+
+export interface SettlementRecord {
+  settlementId: string;
+  batchId: number;
+  destinationChain: string;
+  settlementTxHash: string;
+  blockNumber: number;
+  submittedAt: number;
+  confirmedAt: number;
+  status: string;
+  retries: number;
+  gasUsed: number;
+  explorerUrl: string;
+}
+
+export interface WebhookEndpoint {
+  id: string;
+  url: string;
+  events: string[];
+  status: string;
+  successRate: string;
+  lastDeliveredAt: number;
+}
+
+export interface ApiUsageStats {
+  quota: {
+    limitPerMinute: number;
+    currentUsage: number;
+    resetInSeconds: number;
+  };
+  stats24h: {
+    totalRequests: number;
+    successfulRequests: number;
+    failedRequests: number;
+    averageLatencyMs: number;
+    p95LatencyMs: number;
+  };
+  endpointBreakdown: Array<{
+    endpoint: string;
+    requests: number;
+    sharePct: number;
+  }>;
+}
+
+export interface SearchResult {
+  found: boolean;
+  type?: 'transaction' | 'batch' | 'address' | 'settlement' | 'proof';
+  id?: string | number;
+  data?: any;
+  message?: string;
 }

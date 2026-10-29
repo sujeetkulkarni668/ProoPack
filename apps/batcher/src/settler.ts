@@ -17,6 +17,7 @@ export class BatchSettler {
   private queue: TransactionQueue;
   private provider?: ISettlementProvider;
   private batches: Map<number, BatchMetadata> = new Map();
+  private builtBatches: Map<number, BuiltBatch> = new Map();
 
   constructor(queue: TransactionQueue, provider?: ISettlementProvider) {
     this.queue = queue;
@@ -67,6 +68,7 @@ export class BatchSettler {
       }
 
       this.batches.set(meta.batchId, meta);
+      this.builtBatches.set(meta.batchId, batch);
       return meta;
     } catch (err: any) {
       meta.status = 'FAILED';
@@ -75,12 +77,30 @@ export class BatchSettler {
         this.queue.updateStatus(tx.txId, 'FAILED', { errorMessage: err.message });
       }
       this.batches.set(meta.batchId, meta);
+      this.builtBatches.set(meta.batchId, batch);
       throw new ProofPackError(ErrorCode.SETTLEMENT_FAILED, `Settlement failed: ${err.message}`);
     }
   }
 
   public getBatch(batchId: number): BatchMetadata | undefined {
     return this.batches.get(batchId);
+  }
+
+  public getBuiltBatch(batchId: number): BuiltBatch | undefined {
+    return this.builtBatches.get(batchId);
+  }
+
+  public getProofForTx(batchId: number, txIndex: number): { leaf: Hex; proof: Hex[]; root: Hex } | null {
+    const built = this.builtBatches.get(batchId);
+    if (!built) return null;
+    try {
+      const proof = built.merkleTree.getProof(txIndex);
+      const root = built.merkleTree.getRoot();
+      const leaves = (built.merkleTree as any).leaves as Hex[];
+      return { leaf: leaves[txIndex], proof, root };
+    } catch {
+      return null;
+    }
   }
 
   public getAllBatches(): BatchMetadata[] {
