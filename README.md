@@ -1,11 +1,18 @@
 # ProofPack — Layer 2 Transaction Optimization Platform for MST Blockchain
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![EVM Compatible](https://img.shields.io/badge/EVM-Compatible%20(MST)-blue.svg)](https://mstblockchain.com)
-[![BridgeKey](https://img.shields.io/badge/Wallet-BridgeKey%20Integrated-indigo.svg)](https://bridgekey.io)
-[![Demo Video](https://img.shields.io/badge/Demo%20Video-VID__WEBSCAN-red.svg)](VID_WEBSCAN.mp4)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-success.svg)](https://proofpack-peach.vercel.app/)
-[![On--Chain Contract](https://img.shields.io/badge/On--Chain%20Contract-Coral%20Testnet-00F5A0.svg)](https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4)
+<p align="center">
+  <a href="https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4"><img src="https://img.shields.io/badge/On--Chain%20Contract-Coral%20Testnet%20(54635)-00F5A0?style=for-the-badge&logo=solidity&logoColor=black" alt="On-Chain Contract" height="28" /></a>
+  &nbsp;
+  <a href="https://proofpack-peach.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Vercel%20Production-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" height="28" /></a>
+  &nbsp;
+  <a href="VID_WEBSCAN.mp4"><img src="https://img.shields.io/badge/Demo%20Video-VID__WEBSCAN.mp4-E50914?style=for-the-badge&logo=youtube&logoColor=white" alt="Demo Video" height="28" /></a>
+  &nbsp;
+  <a href="https://bridgekey.io"><img src="https://img.shields.io/badge/Wallet-BridgeKey%20EIP--712-4F46E5?style=for-the-badge&logo=walletconnect&logoColor=white" alt="BridgeKey Wallet" height="28" /></a>
+  &nbsp;
+  <a href="https://mstblockchain.com"><img src="https://img.shields.io/badge/EVM-MST%20Blockchain-0284C7?style=for-the-badge&logo=ethereum&logoColor=white" alt="MST Blockchain" height="28" /></a>
+  &nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-059669?style=for-the-badge" alt="License: MIT" height="28" /></a>
+</p>
 
 **ProofPack** is an end-to-end Layer 2 transaction aggregation and settlement platform engineered for **MST Blockchain** (Chain ID: `4646` Mainnet, `54635` Coral Testnet).
 
