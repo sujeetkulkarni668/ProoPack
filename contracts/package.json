@@ -2,6 +2,7 @@
   "name": "@proofpack/contracts",
   "version": "1.0.0",
   "scripts": {
+    "build": "hardhat compile",
     "compile": "hardhat compile",
     "test": "hardhat test"
   },
