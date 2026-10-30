@@ -47,10 +47,20 @@ export interface MainnetTransactionsResponse {
   source: 'mstscan_v2';
 }
 
+export interface MSTNetworkServiceConfig {
+  explorerApiBase?: string;
+  rpcUrl?: string;
+  expectedChainId?: number;
+  networkName?: string;
+  explorerUrl?: string;
+}
+
 export class MSTMainnetService {
-  private readonly explorerApiBase: string = 'https://mstscan.com/api/v2';
-  private readonly rpcUrl: string = 'https://mariorpc.mstblockchain.com/';
-  private readonly expectedChainId: number = 4646;
+  private readonly explorerApiBase: string;
+  private readonly rpcUrl: string;
+  private readonly expectedChainId: number;
+  private readonly networkName: string;
+  private readonly explorerUrl: string;
 
   // In-memory cache for ultra-low latency & deduplication
   private cachedTxs: Map<string, VerifiedMainnetTx> = new Map();
@@ -59,7 +69,13 @@ export class MSTMainnetService {
   private isFetching: boolean = false;
   private syncTimer?: NodeJS.Timeout;
 
-  constructor() {
+  constructor(config?: MSTNetworkServiceConfig) {
+    this.explorerApiBase = config?.explorerApiBase || 'https://mstscan.com/api/v2';
+    this.rpcUrl = config?.rpcUrl || 'https://mariorpc.mstblockchain.com/';
+    this.expectedChainId = config?.expectedChainId || 4646;
+    this.networkName = config?.networkName || 'MST Mainnet';
+    this.explorerUrl = config?.explorerUrl || 'https://mstscan.com';
+
     // Proactively prefetch on startup and periodically sync
     this.startBackgroundSync();
   }
@@ -184,7 +200,7 @@ export class MSTMainnetService {
           confirmations: raw.confirmations || 1,
           revertReason: raw.revert_reason || null,
           method: raw.method || null,
-          explorerUrl: `https://mstscan.com/tx/${raw.hash}`
+          explorerUrl: `${this.explorerUrl}/tx/${raw.hash}`
         };
 
         // Deduplicate into cache
@@ -328,7 +344,7 @@ export class MSTMainnetService {
         confirmations: raw.confirmations || 1,
         revertReason: raw.revert_reason || null,
         method: raw.method || null,
-        explorerUrl: `https://mstscan.com/tx/${raw.hash}`
+        explorerUrl: `${this.explorerUrl}/tx/${raw.hash}`
       };
 
       this.cachedTxs.set(tx.hash, tx);
@@ -360,7 +376,7 @@ export class MSTMainnetService {
           miner: minerAddr,
           gasUsed: b.gas_used ? b.gas_used.toString() : '0',
           gasLimit: b.gas_limit ? b.gas_limit.toString() : '30000000',
-          explorerUrl: `https://mstscan.com/block/${height}`
+          explorerUrl: `${this.explorerUrl}/block/${height}`
         };
 
         this.cachedBlocks.set(height, blockItem);

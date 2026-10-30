@@ -195,3 +195,16 @@ export async function fetchMainnetStatus(): Promise<MainnetStatusResponse> {
   if (!res.ok) throw new Error('Failed to fetch MST Mainnet network status');
   return res.json();
 }
+
+export async function fetchCoralTestnetTransactions(limit = 30, refresh = false): Promise<MainnetTransactionsResponse> {
+  const url = `${API_BASE}v1/testnet/transactions?limit=${limit}${refresh ? '&refresh=true' : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch MST Coral Testnet transactions');
+  return res.json();
+}
+
+export async function fetchCoralTestnetStatus(): Promise<MainnetStatusResponse> {
+  const res = await fetch(`${API_BASE}v1/testnet/status`);
+  if (!res.ok) throw new Error('Failed to fetch MST Coral Testnet network status');
+  return res.json();
+}

@@ -63,7 +63,21 @@ export function buildApp(config: AppConfig): FastifyInstance {
     rpcUrl: config.rpcUrl
   });
 
-  const mstMainnet = new MSTMainnetService();
+  const mstMainnet = new MSTMainnetService({
+    expectedChainId: 4646,
+    rpcUrl: 'https://mariorpc.mstblockchain.com/',
+    explorerApiBase: 'https://mstscan.com/api/v2',
+    explorerUrl: 'https://mstscan.com',
+    networkName: 'MST Mainnet'
+  });
+
+  const mstCoralTestnet = new MSTMainnetService({
+    expectedChainId: 54635,
+    rpcUrl: 'https://coralrpc.mstblockchain.com',
+    explorerApiBase: 'https://coral.mstscan.com/api/v2',
+    explorerUrl: 'https://coral.mstscan.com',
+    networkName: 'MST Coral Testnet'
+  });
 
   if (config.enableWorker !== false) {
     worker.start();
@@ -79,6 +93,8 @@ export function buildApp(config: AppConfig): FastifyInstance {
   // Graceful shutdown
   app.addHook('onClose', async () => {
     worker.stop();
+    mstMainnet.stopBackgroundSync();
+    mstCoralTestnet.stopBackgroundSync();
   });
 
   // Health and Readiness
@@ -750,6 +766,75 @@ export function buildApp(config: AppConfig): FastifyInstance {
         status: 'unreachable',
         error: err.message,
         expectedChainId: 4646
+      };
+    }
+  });
+
+  // ==========================================
+  // MST Coral Testnet Live Endpoints (54635)
+  // ==========================================
+
+  // MST Coral Testnet Live Transactions Endpoint
+  app.get('/v1/testnet/transactions', async (req, reply) => {
+    const { limit = '30', forceRefresh = 'false' } = req.query as { limit?: string; forceRefresh?: string };
+    try {
+      const data = await mstCoralTestnet.getLatestTransactions({
+        limit: parseInt(limit, 10),
+        forceRefresh: forceRefresh === 'true'
+      });
+      return {
+        ...data,
+        chainId: 54635,
+        network: 'MST Coral Testnet'
+      };
+    } catch (err: any) {
+      reply.status(502);
+      return {
+        error: 'TESTNET_API_UNAVAILABLE',
+        message: err.message || 'Failed to retrieve MST Coral Testnet transactions'
+      };
+    }
+  });
+
+  // Single Coral Testnet Transaction Lookup
+  app.get('/v1/testnet/transactions/:hash', async (req, reply) => {
+    const { hash } = req.params as { hash: string };
+    const tx = await mstCoralTestnet.getTransactionByHash(hash);
+    if (!tx) {
+      reply.status(404);
+      return { error: 'NOT_FOUND', message: `Coral Testnet transaction ${hash} not found` };
+    }
+    return { transaction: tx, chainId: 54635 };
+  });
+
+  // Coral Testnet Live Blocks
+  app.get('/v1/testnet/blocks', async (req) => {
+    const { limit = '12' } = req.query as { limit?: string };
+    const blocks = await mstCoralTestnet.getLatestBlocks(parseInt(limit, 10));
+    return { blocks, chainId: 54635, total: blocks.length };
+  });
+
+  // Coral Testnet RPC Status & Verification
+  app.get('/v1/testnet/status', async () => {
+    try {
+      const rpcCheck = await mstCoralTestnet.verifyRpcChainId();
+      const latestTxs = await mstCoralTestnet.getLatestTransactions({ limit: 1 });
+      const blockNumber = latestTxs.items[0]?.blockNumber;
+      return {
+        status: rpcCheck.verified ? 'healthy' : 'mismatch',
+        rpcUrl: 'https://coralrpc.mstblockchain.com',
+        explorerUrl: 'https://coral.mstscan.com',
+        chainId: rpcCheck.chainId,
+        expectedChainId: 54635,
+        latencyMs: rpcCheck.latencyMs,
+        verified: rpcCheck.verified,
+        blockNumber
+      };
+    } catch (err: any) {
+      return {
+        status: 'unreachable',
+        error: err.message,
+        expectedChainId: 54635
       };
     }
   });

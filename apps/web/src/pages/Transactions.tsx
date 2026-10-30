@@ -25,7 +25,7 @@ import { L2Transaction, VerifiedMainnetTx } from '../types';
 import {
   triggerOperatorFlush,
   fetchMainnetTransactions,
-  fetchMainnetStatus
+  fetchCoralTestnetTransactions
 } from '../services/api';
 
 interface TransactionsPageProps {
@@ -41,16 +41,16 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
   onSelectBatch,
   onRefresh
 }) => {
-  // Tab: 'mainnet' (MST Mainnet) vs 'l2' (ProofPack L2 Rollup)
-  const [activeTab, setActiveTab] = useState<'mainnet' | 'l2'>('mainnet');
+  // Tab: 'coralTestnet' | 'mainnet' | 'l2'
+  const [activeTab, setActiveTab] = useState<'coralTestnet' | 'mainnet' | 'l2'>('coralTestnet');
 
-  // Mainnet state
-  const [mainnetTxs, setMainnetTxs] = useState<VerifiedMainnetTx[]>([]);
-  const [isMainnetLoading, setIsMainnetLoading] = useState(true);
-  const [mainnetError, setMainnetError] = useState<string | null>(null);
-  const [mainnetPage, setMainnetPage] = useState(1);
-  const [selectedMainnetTx, setSelectedMainnetTx] = useState<VerifiedMainnetTx | null>(null);
-  const [autoRefreshMainnet, setAutoRefreshMainnet] = useState(true);
+  // On-Chain transactions state
+  const [onChainTxs, setOnChainTxs] = useState<VerifiedMainnetTx[]>([]);
+  const [isOnChainLoading, setIsOnChainLoading] = useState(true);
+  const [onChainError, setOnChainError] = useState<string | null>(null);
+  const [onChainPage, setOnChainPage] = useState(1);
+  const [selectedOnChainTx, setSelectedOnChainTx] = useState<VerifiedMainnetTx | null>(null);
+  const [autoRefreshOnChain, setAutoRefreshOnChain] = useState(true);
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
   // L2 state
@@ -73,38 +73,52 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  // Fetch Mainnet transactions
-  const loadMainnetTransactions = async (force = false) => {
+  // Fetch On-chain transactions for active network
+  const loadOnChainTransactions = async (force = false) => {
+    if (activeTab === 'l2') return;
+
     try {
-      if (mainnetTxs.length === 0) setIsMainnetLoading(true);
-      const res = await fetchMainnetTransactions(40, force);
+      if (onChainTxs.length === 0) setIsOnChainLoading(true);
+
+      const fetchFn =
+        activeTab === 'coralTestnet'
+          ? fetchCoralTestnetTransactions
+          : fetchMainnetTransactions;
+
+      const res = await fetchFn(40, force);
       if (res && res.items) {
-        setMainnetTxs(res.items);
+        setOnChainTxs(res.items);
         setLastSyncedAt(new Date());
-        setMainnetError(null);
+        setOnChainError(null);
       }
     } catch (err: any) {
-      console.error('Error fetching MST Mainnet transactions:', err);
-      if (mainnetTxs.length === 0) {
-        setMainnetError(err.message || 'Failed to retrieve MST Mainnet transactions');
+      console.error(`Error fetching ${activeTab} transactions:`, err);
+      if (onChainTxs.length === 0) {
+        setOnChainError(err.message || 'Failed to retrieve transactions');
       }
     } finally {
-      setIsMainnetLoading(false);
+      setIsOnChainLoading(false);
     }
   };
 
-  // Auto-polling for Mainnet transactions
+  // Auto-polling for active network
   useEffect(() => {
-    loadMainnetTransactions();
-    if (autoRefreshMainnet) {
+    setOnChainTxs([]);
+    setIsOnChainLoading(true);
+    setOnChainPage(1);
+    loadOnChainTransactions(true);
+
+    if (autoRefreshOnChain && activeTab !== 'l2') {
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
       pollTimerRef.current = setInterval(() => {
-        loadMainnetTransactions();
+        loadOnChainTransactions();
       }, 4000);
     }
+
     return () => {
       if (pollTimerRef.current) clearInterval(pollTimerRef.current);
     };
-  }, [autoRefreshMainnet]);
+  }, [activeTab, autoRefreshOnChain]);
 
   // Flush mempool handler
   const handleFlush = async () => {
@@ -119,8 +133,8 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
     }
   };
 
-  // Mainnet filter
-  const filteredMainnet = mainnetTxs.filter(tx => {
+  // On-chain filter
+  const filteredOnChain = onChainTxs.filter(tx => {
     if (!search) return true;
     const s = search.toLowerCase();
     return (
@@ -131,10 +145,10 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
     );
   });
 
-  const mainnetTotalPages = Math.max(1, Math.ceil(filteredMainnet.length / pageSize));
-  const paginatedMainnet = filteredMainnet.slice(
-    (mainnetPage - 1) * pageSize,
-    mainnetPage * pageSize
+  const onChainTotalPages = Math.max(1, Math.ceil(filteredOnChain.length / pageSize));
+  const paginatedOnChain = filteredOnChain.slice(
+    (onChainPage - 1) * pageSize,
+    onChainPage * pageSize
   );
 
   // L2 filter
@@ -178,6 +192,12 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
     return `${Math.floor(diff / 86400)}d ago`;
   };
 
+  const isCoral = activeTab === 'coralTestnet';
+  const networkName = isCoral ? 'MST Coral Testnet (Chain 54635)' : 'MST Mainnet (Chain 4646)';
+  const explorerBase = isCoral ? 'https://coral.mstscan.com' : 'https://mstscan.com';
+  const rpcHost = isCoral ? 'coralrpc.mstblockchain.com' : 'mariorpc.mstblockchain.com';
+  const currencySymbol = isCoral ? 'tMSTC' : 'MSTC';
+
   return (
     <div className="space-y-6">
       {/* Top Banner & Network Stats Bar */}
@@ -190,42 +210,46 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
             <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2">
               <span>Transactions Registry</span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30">
-                MST Mainnet (Chain 4646)
+                {networkName}
               </span>
             </h1>
           </div>
           <p className="text-xs text-slate-400">
-            Real-time verified transaction stream synced directly from the MST Blockchain Mainnet & ProofPack L2 Rollup
+            Real-time verified transaction stream synced directly from {isCoral ? 'MST Coral Testnet' : 'MST Mainnet'} & ProofPack L2 Rollup
           </p>
         </div>
 
         {/* Action Buttons & Sync Status */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Live Sync Status */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0C1424] border border-white/10 text-xs">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F5A0] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00F5A0]"></span>
-            </span>
-            <span className="text-slate-300 font-medium text-[11px]">
-              {autoRefreshMainnet ? 'Live Sync Active (4s)' : 'Sync Paused'}
-            </span>
-            <button
-              onClick={() => setAutoRefreshMainnet(!autoRefreshMainnet)}
-              className="text-[10px] font-bold text-[#00F5A0] hover:underline ml-1"
-            >
-              {autoRefreshMainnet ? 'Pause' : 'Resume'}
-            </button>
-          </div>
+          {activeTab !== 'l2' && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0C1424] border border-white/10 text-xs">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F5A0] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00F5A0]"></span>
+              </span>
+              <span className="text-slate-300 font-medium text-[11px]">
+                {autoRefreshOnChain ? 'Live Sync Active (4s)' : 'Sync Paused'}
+              </span>
+              <button
+                onClick={() => setAutoRefreshOnChain(!autoRefreshOnChain)}
+                className="text-[10px] font-bold text-[#00F5A0] hover:underline ml-1"
+              >
+                {autoRefreshOnChain ? 'Pause' : 'Resume'}
+              </button>
+            </div>
+          )}
 
-          <button
-            onClick={() => loadMainnetTransactions(true)}
-            className="p-2 rounded-xl border border-white/10 bg-[#0C1424] hover:bg-[#121c33] text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1.5"
-            title="Force refresh MST Mainnet transactions"
-          >
-            <RotateCw className="w-3.5 h-3.5" />
-            <span className="text-[11px] font-medium hidden sm:inline">Refresh</span>
-          </button>
+          {activeTab !== 'l2' && (
+            <button
+              onClick={() => loadOnChainTransactions(true)}
+              className="p-2 rounded-xl border border-white/10 bg-[#0C1424] hover:bg-[#121c33] text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1.5"
+              title="Force refresh transactions"
+            >
+              <RotateCw className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-medium hidden sm:inline">Refresh</span>
+            </button>
+          )}
 
           {activeTab === 'l2' && (
             <button
@@ -240,9 +264,29 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
       </div>
 
-      {/* Tab Selector: MST Mainnet vs ProofPack L2 */}
+      {/* 3-Way Tab Selector */}
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Tab 1: Coral Testnet (54635) */}
+          <button
+            onClick={() => {
+              setActiveTab('coralTestnet');
+              setSearch('');
+            }}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeTab === 'coralTestnet'
+                ? 'bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/40 shadow-sm shadow-[#00F5A0]/10'
+                : 'text-slate-400 hover:text-slate-200 border border-transparent'
+            }`}
+          >
+            <Globe2 className="w-4 h-4" />
+            <span>MST Coral Testnet (54635)</span>
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-[#00F5A0]/20 text-[#00F5A0] font-mono">
+              Live
+            </span>
+          </button>
+
+          {/* Tab 2: Mainnet (4646) */}
           <button
             onClick={() => {
               setActiveTab('mainnet');
@@ -254,13 +298,11 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 : 'text-slate-400 hover:text-slate-200 border border-transparent'
             }`}
           >
-            <Globe2 className="w-4 h-4" />
-            <span>MST Mainnet Verified Transactions</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-[#00F5A0]/20 text-[#00F5A0] font-mono">
-              {mainnetTxs.length}
-            </span>
+            <Radio className="w-4 h-4" />
+            <span>MST Mainnet (4646)</span>
           </button>
 
+          {/* Tab 3: ProofPack L2 Queue */}
           <button
             onClick={() => {
               setActiveTab('l2');
@@ -281,8 +323,8 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
 
         <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-          <span>Target RPC:</span>
-          <span className="text-[#00F5A0]">mariorpc.mstblockchain.com</span>
+          <span>Active RPC:</span>
+          <span className="text-[#00F5A0]">{rpcHost}</span>
         </div>
       </div>
 
@@ -296,11 +338,11 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
               value={search}
               onChange={e => {
                 setSearch(e.target.value);
-                setMainnetPage(1);
+                setOnChainPage(1);
                 setL2Page(1);
               }}
               placeholder={
-                activeTab === 'mainnet'
+                activeTab !== 'l2'
                   ? 'Search by Tx Hash, From/To address, or Block number...'
                   : 'Search by TxID, sender, or recipient...'
               }
@@ -356,9 +398,9 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
 
         <div className="text-xs text-slate-400 font-mono">
-          {activeTab === 'mainnet' ? (
+          {activeTab !== 'l2' ? (
             <span>
-              Showing {paginatedMainnet.length} of {filteredMainnet.length} Mainnet transactions
+              Showing {paginatedOnChain.length} of {filteredOnChain.length} verified transactions
             </span>
           ) : (
             <span>
@@ -368,17 +410,17 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
       </div>
 
-      {/* TAB 1: MST MAINNET VERIFIED TRANSACTIONS */}
-      {activeTab === 'mainnet' && (
+      {/* ON-CHAIN VERIFIED TRANSACTIONS (CORAL TESTNET OR MAINNET) */}
+      {activeTab !== 'l2' && (
         <div className="rounded-3xl border border-white/10 bg-[#0C1424] shadow-xl overflow-hidden">
-          {mainnetError && (
+          {onChainError && (
             <div className="p-4 bg-rose-500/10 border-b border-rose-500/20 text-rose-400 text-xs flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
-                <span>{mainnetError}</span>
+                <span>{onChainError}</span>
               </div>
               <button
-                onClick={() => loadMainnetTransactions(true)}
+                onClick={() => loadOnChainTransactions(true)}
                 className="px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold"
               >
                 Retry
@@ -391,7 +433,7 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
               <thead className="bg-[#070C18]/80 text-[11px] font-semibold text-slate-400 border-b border-white/10 uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4">Tx Hash</th>
-                  <th className="py-3 px-4">Method / Status</th>
+                  <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4">Block #</th>
                   <th className="py-3 px-4">Age</th>
                   <th className="py-3 px-4">From</th>
@@ -402,16 +444,18 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 font-mono">
-                {isMainnetLoading && mainnetTxs.length === 0 ? (
+                {isOnChainLoading && onChainTxs.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="py-12 text-center text-slate-400">
                       <div className="flex flex-col items-center justify-center gap-2">
                         <RotateCw className="w-6 h-6 text-[#00F5A0] animate-spin" />
-                        <span className="text-xs">Connecting to MST Mainnet API & mariorpc (Chain 4646)...</span>
+                        <span className="text-xs">
+                          Connecting to {isCoral ? 'MST Coral Testnet (54635)' : 'MST Mainnet (4646)'}...
+                        </span>
                       </div>
                     </td>
                   </tr>
-                ) : paginatedMainnet.length === 0 ? (
+                ) : paginatedOnChain.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="py-12 text-center text-slate-400">
                       <div className="flex flex-col items-center justify-center gap-2">
@@ -419,14 +463,14 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         <span className="text-sm font-semibold text-slate-300">No Transactions Found</span>
                         <span className="text-xs text-slate-500">
                           {search
-                            ? `No Mainnet transactions match "${search}"`
-                            : 'Waiting for new Mainnet blocks...'}
+                            ? `No transactions match "${search}"`
+                            : 'Waiting for new on-chain blocks...'}
                         </span>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  paginatedMainnet.map(tx => {
+                  paginatedOnChain.map(tx => {
                     const isSuccess =
                       tx.result === 'success' ||
                       tx.status === 'ok' ||
@@ -435,7 +479,7 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                     return (
                       <tr
                         key={tx.hash}
-                        onClick={() => setSelectedMainnetTx(tx)}
+                        onClick={() => setSelectedOnChainTx(tx)}
                         className="hover:bg-white/[0.03] cursor-pointer transition-colors"
                       >
                         {/* Tx Hash */}
@@ -507,24 +551,24 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
 
                         {/* Value */}
                         <td className="py-3.5 px-4 font-bold text-white">
-                          {tx.valueFormatted || formatMstc(tx.value)}
+                          {tx.valueFormatted || `${formatMstc(tx.value)} ${currencySymbol}`}
                         </td>
 
                         {/* Fee */}
                         <td className="py-3.5 px-4 text-slate-400 text-[11px]">
-                          {tx.feeFormatted || '< 0.0001 MSTC'}
+                          {tx.feeFormatted || `< 0.0001 ${currencySymbol}`}
                         </td>
 
                         {/* Explorer Link */}
                         <td className="py-3.5 px-4 text-right">
                           <a
-                            href={`https://mstscan.com/tx/${tx.hash}`}
+                            href={tx.explorerUrl || `${explorerBase}/tx/${tx.hash}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
                             className="inline-flex items-center gap-1 text-[11px] text-[#00F5A0] hover:text-[#00D287] hover:underline"
                           >
-                            <span>MSTScan</span>
+                            <span>Explorer</span>
                             <ExternalLink className="w-3 h-3" />
                           </a>
                         </td>
@@ -537,22 +581,22 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
           </div>
 
           {/* Pagination */}
-          {mainnetTotalPages > 1 && (
+          {onChainTotalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-white/10 bg-[#070C18]/60 text-xs">
               <span className="text-slate-400">
-                Page {mainnetPage} of {mainnetTotalPages}
+                Page {onChainPage} of {onChainTotalPages}
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setMainnetPage(p => Math.max(1, p - 1))}
-                  disabled={mainnetPage === 1}
+                  onClick={() => setOnChainPage(p => Math.max(1, p - 1))}
+                  disabled={onChainPage === 1}
                   className="px-3 py-1 rounded-lg border border-white/10 bg-[#0C1424] text-slate-300 hover:text-white disabled:opacity-40 transition-colors"
                 >
                   Previous
                 </button>
                 <button
-                  onClick={() => setMainnetPage(p => Math.min(mainnetTotalPages, p + 1))}
-                  disabled={mainnetPage === mainnetTotalPages}
+                  onClick={() => setOnChainPage(p => Math.min(onChainTotalPages, p + 1))}
+                  disabled={onChainPage === onChainTotalPages}
                   className="px-3 py-1 rounded-lg border border-white/10 bg-[#0C1424] text-slate-300 hover:text-white disabled:opacity-40 transition-colors"
                 >
                   Next
@@ -563,7 +607,7 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
       )}
 
-      {/* TAB 2: PROOFPACK L2 ROLLUP QUEUE & BATCHES */}
+      {/* PROOFPACK L2 ROLLUP QUEUE & BATCHES */}
       {activeTab === 'l2' && (
         <div className="rounded-3xl border border-white/10 bg-[#0C1424] shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
@@ -686,8 +730,8 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
         </div>
       )}
 
-      {/* MODAL 1: MST MAINNET TRANSACTION DETAILS */}
-      {selectedMainnetTx && (
+      {/* MODAL 1: ON-CHAIN TRANSACTION DETAILS */}
+      {selectedOnChainTx && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-[#0C1424] border border-white/10 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl relative">
             <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
@@ -697,18 +741,18 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                    <span>MST Mainnet Transaction</span>
+                    <span>{isCoral ? 'MST Coral Testnet Transaction' : 'MST Mainnet Transaction'}</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30">
-                      Chain 4646
+                      {isCoral ? 'Chain 54635' : 'Chain 4646'}
                     </span>
                   </h3>
                   <p className="text-xs text-slate-400 font-mono">
-                    {selectedMainnetTx.hash}
+                    {selectedOnChainTx.hash}
                   </p>
                 </div>
               </div>
               <button
-                onClick={() => setSelectedMainnetTx(null)}
+                onClick={() => setSelectedOnChainTx(null)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
               >
                 <X className="w-5 h-5" />
@@ -721,21 +765,21 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 <CheckCircle2 className="w-5 h-5 text-[#00F5A0]" />
                 <div>
                   <div className="text-xs font-bold text-white">
-                    Confirmed on MST Blockchain Mainnet
+                    Confirmed on {isCoral ? 'MST Coral Testnet' : 'MST Mainnet'}
                   </div>
                   <div className="text-[10px] text-slate-400">
-                    Block #{selectedMainnetTx.blockNumber?.toLocaleString()} · Confirmed via mariorpc.mstblockchain.com
+                    Block #{selectedOnChainTx.blockNumber?.toLocaleString()} · Confirmed via {rpcHost}
                   </div>
                 </div>
               </div>
 
               <a
-                href={selectedMainnetTx.explorerUrl || `https://mstscan.com/tx/${selectedMainnetTx.hash}`}
+                href={selectedOnChainTx.explorerUrl || `${explorerBase}/tx/${selectedOnChainTx.hash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-xl bg-[#00F5A0] hover:bg-[#00D287] text-gray-950 font-bold text-xs flex items-center gap-1 shadow-md transition-all"
               >
-                <span>View on MSTScan</span>
+                <span>View on Explorer</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -745,34 +789,34 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
               <div className="p-3.5 rounded-xl bg-[#070C18] border border-white/5">
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">From (Sender)</span>
                 <div className="font-mono font-semibold text-white break-all mt-1">
-                  {selectedMainnetTx.from}
+                  {selectedOnChainTx.from}
                 </div>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#070C18] border border-white/5">
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">To (Recipient)</span>
                 <div className="font-mono font-semibold text-white break-all mt-1">
-                  {selectedMainnetTx.to || 'Contract Creation'}
+                  {selectedOnChainTx.to || 'Contract Creation'}
                 </div>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#070C18] border border-white/5">
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Value</span>
                 <div className="font-mono font-bold text-[#00F5A0] text-sm mt-1">
-                  {selectedMainnetTx.valueFormatted || `${formatMstc(selectedMainnetTx.value)} MSTC`}
+                  {selectedOnChainTx.valueFormatted || `${formatMstc(selectedOnChainTx.value)} ${currencySymbol}`}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono">
-                  {selectedMainnetTx.value || '0'} Wei
+                  {selectedOnChainTx.value || '0'} Wei
                 </div>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#070C18] border border-white/5">
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Transaction Fee</span>
                 <div className="font-mono font-bold text-white text-sm mt-1">
-                  {selectedMainnetTx.feeFormatted || '< 0.0001 MSTC'}
+                  {selectedOnChainTx.feeFormatted || `< 0.0001 ${currencySymbol}`}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono">
-                  Gas: {selectedMainnetTx.gasUsed || '21000'} · Price: {selectedMainnetTx.gasPrice || '1000000000'} Wei
+                  Gas: {selectedOnChainTx.gasUsed || '21000'} · Price: {selectedOnChainTx.gasPrice || '1000000000'} Wei
                 </div>
               </div>
             </div>
@@ -783,7 +827,7 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 <span className="font-semibold text-slate-400">Raw Explorer Response (Blockscout v2 Schema)</span>
                 <button
                   onClick={() =>
-                    copyToClipboard(JSON.stringify(selectedMainnetTx, null, 2), 'rawMainnetJson')
+                    copyToClipboard(JSON.stringify(selectedOnChainTx, null, 2), 'rawMainnetJson')
                   }
                   className="flex items-center gap-1 text-[#00F5A0] hover:underline text-[11px]"
                 >
@@ -792,7 +836,7 @@ export const TransactionsPage: React.FC<TransactionsPageProps> = ({
                 </button>
               </div>
               <pre className="p-3.5 rounded-xl bg-[#070C18] border border-white/5 text-slate-300 font-mono text-[10px] overflow-x-auto max-h-48">
-                {JSON.stringify(selectedMainnetTx, null, 2)}
+                {JSON.stringify(selectedOnChainTx, null, 2)}
               </pre>
             </div>
           </div>
