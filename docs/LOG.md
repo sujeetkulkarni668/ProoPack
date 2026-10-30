@@ -109,4 +109,20 @@ This document records the complete chronological log of development, architectur
   - Commit `1d8435e`: Mainnet API integration, Coral Testnet migration, and BridgeKey fix.
   - Commit `57ba104`: Real-time Coral Testnet transaction streaming and 3-way network switcher.
   - Commit `3106f0b`: Production `deployment_guide.md` and `overview.md`.
-  - Pushed to `https://github.com/sujeetkulkarni668/ProoPack.git` on branch `main`.
+
+---
+
+### Phase 9: Production Release Roadmap & Readme Consolidation
+- **`todo.md` (Readiness: 92% -> 100%):** Outlined completed modules and exact remaining operational rollout steps.
+- **Client-Side Direct Explorer Resiliency:** Enhanced `apps/web/src/services/api.ts` with direct fallback to `https://coral.mstscan.com/api/v2` so transactions stream reliably in static cloud environments (Vercel).
+- **On-Chain Deployment Script:** Implemented `contracts/scripts/deploy.ts` targeting MST Coral Testnet (`54635`).
+- **Live On-Chain Deployment:**
+  - Successfully broadcasted and confirmed `ProofPackSettlement.sol` on **MST Coral Testnet**!
+  - **Deployed Contract Address:** `0x8bdc4026a90297bf225761923488a34d0073c8e4`
+  - **Deployment Tx Hash:** `0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1`
+  - **Block Number:** `405557` (873,085 gas consumed)
+  - **Live Explorer Link:** https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4
+- **Live Vercel Deployment:** Hosted production web app at https://proofpack-peach.vercel.app/
+- **Video Walkthrough:** Added `VID_WEBSCAN.mp4` to repository and referenced in README.
+- **Repository Organization:** Consolidated loose markdown documents into `docs/` and redesigned modern `for-the-badge` header badges.
+- **CI/CD Pipeline:** Configured multi-job GitHub Actions workflow (`contracts`, `backend`, `frontend`) and fixed the `build` script alias in `contracts/package.json`. All pipelines passing green!
