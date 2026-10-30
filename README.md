@@ -66,13 +66,19 @@ proofpack/
 │   ├── compression/     # Varint & address dictionary binary codec
 │   └── chain-adapters/  # BridgeKey wallet adapter & MST RPC client
 ├── docs/
-│   ├── MST_COMPATIBILITY_REPORT.md  # Official MST & BridgeKey verification
 │   ├── ARCHITECTURE.md              # Layer 2 aggregation architecture
+│   ├── DEPLOYMENT_GUIDE.md          # Live production & on-chain rollout guide
+│   ├── OVERVIEW.md                  # Comprehensive architectural and system overview
+│   ├── APPLNFLOW.md                 # User zero-gas flow & sequencer responsibilities
+│   ├── WORKFLOW.md                  # Protocol state machine & data lifecycle
+│   ├── TODO.md                      # Production release roadmap & readiness audit
+│   ├── MST_COMPATIBILITY_REPORT.md  # Official MST & BridgeKey verification
 │   ├── THREAT_MODEL.md              # Security model & attack mitigation
 │   ├── PROTOCOL_SPEC.md             # Wire format & state commitments
 │   ├── BENCHMARKS.md                # Measured gas & compression benchmarks
 │   ├── API.md                       # REST API specification
-│   └── LOCAL_DEVELOPMENT.md         # Setup and run guide
+│   ├── LOCAL_DEVELOPMENT.md         # Setup and run guide
+│   └── LOG.md                       # Complete engineering trajectory log
 └── tests/
     └── benchmarks/      # Reproducible performance & cost benchmark runner
 ```
