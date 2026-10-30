@@ -33,7 +33,7 @@ async function main() {
   console.log(`Assigning Operator: ${operatorAddress}\n`);
 
   console.log('📦 Deploying ProofPackSettlement.sol to MST Blockchain...');
-  const settlement = await viem.deployContract('ProofPackSettlement', [operatorAddress]);
+  const settlement = await viem.deployContract('ProofPackSettlement', [operatorAddress, operatorAddress]);
 
   console.log('\n====================================================');
   console.log('🎉 CONTRACT SUCCESSFULLY DEPLOYED ON-CHAIN!');
