@@ -76,7 +76,8 @@ export function buildApp(config: AppConfig): FastifyInstance {
     rpcUrl: 'https://coralrpc.mstblockchain.com',
     explorerApiBase: 'https://coral.mstscan.com/api/v2',
     explorerUrl: 'https://coral.mstscan.com',
-    networkName: 'MST Coral Testnet'
+    networkName: 'MST Coral Testnet',
+    currencySymbol: 'tMSTC'
   });
 
   if (config.enableWorker !== false) {

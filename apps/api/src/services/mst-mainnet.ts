@@ -53,6 +53,7 @@ export interface MSTNetworkServiceConfig {
   expectedChainId?: number;
   networkName?: string;
   explorerUrl?: string;
+  currencySymbol?: string;
 }
 
 export class MSTMainnetService {
@@ -61,6 +62,7 @@ export class MSTMainnetService {
   private readonly expectedChainId: number;
   private readonly networkName: string;
   private readonly explorerUrl: string;
+  private readonly currencySymbol: string;
 
   // In-memory cache for ultra-low latency & deduplication
   private cachedTxs: Map<string, VerifiedMainnetTx> = new Map();
@@ -75,6 +77,7 @@ export class MSTMainnetService {
     this.expectedChainId = config?.expectedChainId || 4646;
     this.networkName = config?.networkName || 'MST Mainnet';
     this.explorerUrl = config?.explorerUrl || 'https://mstscan.com';
+    this.currencySymbol = config?.currencySymbol || 'MSTC';
 
     // Proactively prefetch on startup and periodically sync
     this.startBackgroundSync();
@@ -188,13 +191,13 @@ export class MSTMainnetService {
           from: sender,
           to: recipient,
           value: valWei,
-          valueFormatted: `${valFormatted} MSTC`,
+          valueFormatted: `${valFormatted} ${this.currencySymbol}`,
           timestamp: raw.timestamp,
           timestampMs,
           result: 'success',
           status: 'ok',
           fee: feeWei,
-          feeFormatted: `${feeFormatted} MSTC`,
+          feeFormatted: `${feeFormatted} ${this.currencySymbol}`,
           gasUsed: raw.gas_used ? raw.gas_used.toString() : '21000',
           gasPrice: raw.gas_price ? raw.gas_price.toString() : '1000000000',
           confirmations: raw.confirmations || 1,
@@ -332,13 +335,13 @@ export class MSTMainnetService {
         from: sender,
         to: recipient,
         value: valWei,
-        valueFormatted: `${valFormatted} MSTC`,
+        valueFormatted: `${valFormatted} ${this.currencySymbol}`,
         timestamp: raw.timestamp,
         timestampMs,
         result: raw.result === 'success' ? 'success' : 'failure',
         status: raw.status === 'ok' ? 'ok' : 'error',
         fee: feeWei,
-        feeFormatted: `${feeFormatted} MSTC`,
+        feeFormatted: `${feeFormatted} ${this.currencySymbol}`,
         gasUsed: raw.gas_used ? raw.gas_used.toString() : '21000',
         gasPrice: raw.gas_price ? raw.gas_price.toString() : '1000000000',
         confirmations: raw.confirmations || 1,
