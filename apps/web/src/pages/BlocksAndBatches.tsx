@@ -189,7 +189,7 @@ export const BlocksAndBatchesPage: React.FC<BlocksAndBatchesProps> = ({
         <div className="rounded-3xl border border-slate-200 dark:border-gray-800 bg-white dark:bg-[#111827] shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-gray-800 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-900 dark:text-white">
-              MST Blockchain EVM Blocks (Chain ID: 91562037)
+              MST Blockchain EVM Blocks (Mainnet: 4646 / Coral Testnet: 54635)
             </span>
             <span className="text-xs font-mono text-slate-400">
               Live Layer 1 carrier blocks
@@ -234,7 +234,7 @@ export const BlocksAndBatchesPage: React.FC<BlocksAndBatchesProps> = ({
                     </td>
                     <td className="py-3 px-4">
                       <a
-                        href={`https://testnet.mstscan.com/block/${blk.blockNumber}`}
+                        href={`https://mstscan.com/block/${blk.blockNumber}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
@@ -341,7 +341,7 @@ export const BlocksAndBatchesPage: React.FC<BlocksAndBatchesProps> = ({
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] text-slate-400 uppercase">MST Blockchain Settlement Tx</span>
                   <a
-                    href={`https://testnet.mstscan.com/tx/${selectedBatchDetails.batch.l1TxHash}`}
+                    href={`https://mstscan.com/tx/${selectedBatchDetails.batch.l1TxHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"

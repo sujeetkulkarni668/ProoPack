@@ -229,3 +229,49 @@ export interface SearchResult {
   data?: any;
   message?: string;
 }
+
+export interface VerifiedMainnetTx {
+  hash: string;
+  blockNumber: number;
+  from: string;
+  to: string;
+  value: string;
+  valueFormatted: string;
+  timestamp: string;
+  timestampMs: number;
+  result: 'success' | 'failure' | 'pending';
+  status: 'ok' | 'error' | 'pending';
+  fee: string;
+  feeFormatted: string;
+  gasUsed: string;
+  gasPrice: string;
+  confirmations: number;
+  revertReason: string | null;
+  method: string | null;
+  explorerUrl: string;
+}
+
+export interface MainnetTransactionsResponse {
+  items: VerifiedMainnetTx[];
+  total: number;
+  nextPageParams?: {
+    block_number: number;
+    index: number;
+    items_count: number;
+  } | null;
+  syncedAt: number;
+  source: string;
+  chainId: number;
+  network: string;
+}
+
+export interface MainnetStatusResponse {
+  status: string;
+  rpcUrl?: string;
+  explorerUrl?: string;
+  chainId?: number;
+  expectedChainId: number;
+  latencyMs?: number;
+  verified?: boolean;
+  blockNumber?: number;
+}

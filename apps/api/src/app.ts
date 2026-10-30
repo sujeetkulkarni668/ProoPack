@@ -23,6 +23,7 @@ import { calculateCostMetrics, hexToBuffer } from '@proofpack/compression';
 import { MSTClient } from '@proofpack/chain-adapters';
 import { Address, Hex, isAddress, formatEther } from 'viem';
 import { seedInitialData } from './seed';
+import { MSTMainnetService } from './services/mst-mainnet';
 
 export interface AppConfig {
   chainId: number;
@@ -61,6 +62,8 @@ export function buildApp(config: AppConfig): FastifyInstance {
     chainId,
     rpcUrl: config.rpcUrl
   });
+
+  const mstMainnet = new MSTMainnetService();
 
   if (config.enableWorker !== false) {
     worker.start();
@@ -365,7 +368,28 @@ export function buildApp(config: AppConfig): FastifyInstance {
 
   // Blocks Endpoint (MST Underlying Chain)
   app.get('/v1/blocks', async () => {
-    let latestHeight = 9845n;
+    try {
+      const mainnetBlocks = await mstMainnet.getLatestBlocks(8);
+      if (mainnetBlocks.length > 0) {
+        const blocks = mainnetBlocks.map((b, i) => ({
+          blockNumber: b.height,
+          blockHash: b.hash,
+          parentHash: b.parentHash,
+          timestamp: b.timestampMs,
+          txCount: b.txCount,
+          proposer: b.miner,
+          gasUsed: parseInt(b.gasUsed, 10) || 0,
+          gasLimit: parseInt(b.gasLimit, 10) || 30000000,
+          finality: 'FINALIZED',
+          isSettlementCarrier: i % 2 === 0
+        }));
+        return { blocks, latestBlockNumber: blocks[0].blockNumber };
+      }
+    } catch {
+      // Fallback
+    }
+
+    let latestHeight = 21766850n;
     try {
       latestHeight = await mstClient.getBlockNumber();
     } catch {
@@ -663,6 +687,71 @@ export function buildApp(config: AppConfig): FastifyInstance {
     }
 
     return { found: false, message: `No matching entity found for "${clean}"` };
+  });
+
+  // MST Mainnet Live Transactions Endpoint
+  app.get('/v1/mainnet/transactions', async (req, reply) => {
+    const { limit = '30', forceRefresh = 'false' } = req.query as { limit?: string; forceRefresh?: string };
+    try {
+      const data = await mstMainnet.getLatestTransactions({
+        limit: parseInt(limit, 10),
+        forceRefresh: forceRefresh === 'true'
+      });
+      return {
+        ...data,
+        chainId: 4646,
+        network: 'MST Mainnet'
+      };
+    } catch (err: any) {
+      reply.status(502);
+      return {
+        error: 'MAINNET_API_UNAVAILABLE',
+        message: err.message || 'Failed to retrieve MST Mainnet transactions'
+      };
+    }
+  });
+
+  // Single Mainnet Transaction Lookup
+  app.get('/v1/mainnet/transactions/:hash', async (req, reply) => {
+    const { hash } = req.params as { hash: string };
+    const tx = await mstMainnet.getTransactionByHash(hash);
+    if (!tx) {
+      reply.status(404);
+      return { error: 'NOT_FOUND', message: `Mainnet transaction ${hash} not found` };
+    }
+    return { transaction: tx, chainId: 4646 };
+  });
+
+  // Mainnet Live Blocks
+  app.get('/v1/mainnet/blocks', async (req) => {
+    const { limit = '12' } = req.query as { limit?: string };
+    const blocks = await mstMainnet.getLatestBlocks(parseInt(limit, 10));
+    return { blocks, chainId: 4646, total: blocks.length };
+  });
+
+  // Mainnet RPC Status & Verification
+  app.get('/v1/mainnet/status', async () => {
+    try {
+      const rpcCheck = await mstMainnet.verifyRpcChainId();
+      const latestTxs = await mstMainnet.getLatestTransactions({ limit: 1 });
+      const blockNumber = latestTxs.items[0]?.blockNumber;
+      return {
+        status: rpcCheck.verified ? 'healthy' : 'mismatch',
+        rpcUrl: 'https://mariorpc.mstblockchain.com/',
+        explorerUrl: 'https://mstscan.com',
+        chainId: rpcCheck.chainId,
+        expectedChainId: 4646,
+        latencyMs: rpcCheck.latencyMs,
+        verified: rpcCheck.verified,
+        blockNumber
+      };
+    } catch (err: any) {
+      return {
+        status: 'unreachable',
+        error: err.message,
+        expectedChainId: 4646
+      };
+    }
   });
 
   // Operator Trigger: Flush batch now

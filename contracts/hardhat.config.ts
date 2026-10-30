@@ -15,8 +15,21 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 31337
     },
+    // Official target testnet: MST Coral Testnet
+    mstCoralTestnet: {
+      url: process.env.MST_RPC_URL || 'https://coralrpc.mstblockchain.com',
+      chainId: 54635,
+      accounts: process.env.OPERATOR_PRIVATE_KEY ? [process.env.OPERATOR_PRIVATE_KEY] : []
+    },
+    // Default testnet alias pointing to MST Coral Testnet
     mstTestnet: {
-      url: process.env.MST_RPC_URL || 'https://testnetrpc.mstblockchain.com',
+      url: process.env.MST_RPC_URL || 'https://coralrpc.mstblockchain.com',
+      chainId: 54635,
+      accounts: process.env.OPERATOR_PRIVATE_KEY ? [process.env.OPERATOR_PRIVATE_KEY] : []
+    },
+    // Legacy testnet (Deprecated, scheduled for shutdown Jan 31, 2027)
+    mstLegacyTestnet: {
+      url: 'https://testnetrpc.mstblockchain.com',
       chainId: 91562037,
       accounts: process.env.OPERATOR_PRIVATE_KEY ? [process.env.OPERATOR_PRIVATE_KEY] : []
     },

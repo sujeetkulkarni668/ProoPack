@@ -20,20 +20,35 @@ export default {
           foreground: "var(--muted-foreground)"
         },
         ring: "var(--ring)",
+        mint: {
+          50: '#f0fdf9',
+          100: '#ccfbef',
+          200: '#99f6df',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#00F5A0',
+          signal: '#00F5A0',
+          600: '#00d287',
+          700: '#00a86b',
+          800: '#065f46',
+          900: '#064e3b',
+          glow: 'rgba(0, 245, 160, 0.35)'
+        },
         brand: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          900: '#14532d'
+          50: '#f0fdf9',
+          100: '#ccfbef',
+          400: '#2ee59d',
+          500: '#00F5A0',
+          600: '#00d287',
+          700: '#00a86b',
+          900: '#064e3b'
         },
         mst: {
           blue: '#2563eb',
-          cyan: '#06b6d4',
-          dark: '#0a0f1d',
-          card: '#111827',
-          border: '#1f2937'
+          cyan: '#00F5A0',
+          dark: '#070c18',
+          card: '#0c1424',
+          border: '#16233b'
         }
       }
     },

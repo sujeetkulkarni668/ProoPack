@@ -15,7 +15,7 @@ describe('Batcher & Transaction Processing Engine', () => {
     fee: '1000000000000',
     nonce,
     validUntil: 1800000000,
-    chainId: 91562037,
+    chainId: 54635,
     signature: '0x' + 'aa'.repeat(65),
     status: 'SUBMITTED',
     createdAt: Date.now()

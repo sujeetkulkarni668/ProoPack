@@ -22,9 +22,10 @@ import {
   CostAnalyticsData,
   HealthResponse,
   NetworkStatsResponse,
-  NetworkHistoryResponse
+  NetworkHistoryResponse,
+  MainnetStatusResponse
 } from '../types';
-import { fetchNetworkStats, fetchNetworkHistory } from '../services/api';
+import { fetchNetworkStats, fetchNetworkHistory, fetchMainnetStatus } from '../services/api';
 
 interface DashboardProps {
   transactions: L2Transaction[];
@@ -55,19 +56,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [activeMetricTab, setActiveMetricTab] = useState<'tx' | 'tps' | 'compression' | 'latency' | 'fees'>('tx');
   const [stats, setStats] = useState<NetworkStatsResponse | null>(null);
   const [history, setHistory] = useState<NetworkHistoryResponse | null>(null);
+  const [mainnetStatus, setMainnetStatus] = useState<MainnetStatusResponse | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
 
   useEffect(() => {
     let mounted = true;
     const loadStats = async () => {
       try {
-        const [s, h] = await Promise.all([
+        const [s, h, m] = await Promise.allSettled([
           fetchNetworkStats(),
-          fetchNetworkHistory(timeRange)
+          fetchNetworkHistory(timeRange),
+          fetchMainnetStatus()
         ]);
         if (mounted) {
-          setStats(s);
-          setHistory(h);
+          if (s.status === 'fulfilled') setStats(s.value);
+          if (h.status === 'fulfilled') setHistory(h.value);
+          if (m.status === 'fulfilled') setMainnetStatus(m.value);
         }
       } catch (err) {
         console.error('Failed to load dashboard metrics:', err);
@@ -115,36 +119,51 @@ export const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* Welcome Banner & Quick Action */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-3xl border border-slate-200 dark:border-gray-800 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-cyan-500/10 backdrop-blur">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-3xl border border-emerald-500/20 bg-[#0C1424] shadow-lg">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              MST Layer 2 Explorer & Analytics
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <h1 className="text-xl font-extrabold tracking-tight text-white">
+              MST Blockchain & Layer 2 Explorer
             </h1>
-            <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
-              Chain ID: 91562037
+            <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0] animate-pulse"></span>
+              <span>MST Mainnet (Chain 4646)</span>
             </span>
+            {mainnetStatus?.blockNumber && (
+              <span className="px-2 py-0.5 text-[10px] font-mono rounded-full bg-slate-800 text-slate-300 border border-white/5">
+                Block #{mainnetStatus.blockNumber.toLocaleString()}
+              </span>
+            )}
           </div>
-          <p className="text-xs text-slate-600 dark:text-gray-400">
-            Real-time batch aggregation, LEB128 Varint compression, and Merkle settlement on MST EVM.
+          <p className="text-xs text-slate-400">
+            Real-time verified Mainnet transaction ledger, EIP-712 off-chain signatures, and LEB128 Varint compression.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={onOpenSendModal}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-gray-950 font-bold text-xs shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#00F5A0] to-[#00D287] hover:opacity-90 text-gray-950 font-bold text-xs shadow-md shadow-[#00F5A0]/20 transition-all flex items-center gap-1.5"
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Submit L2 Tx</span>
           </button>
           <a
-            href="https://coral-faucet.mstblockchain.com/"
+            href="https://mstscan.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-xs font-semibold transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl border border-white/10 bg-[#070C18] hover:bg-[#121c33] text-slate-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5"
           >
-            <span>Free Coral Faucet</span>
+            <span>MSTScan Explorer</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+          <a
+            href="https://mstblockchain.com/contact/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl border border-[#00F5A0]/30 bg-[#00F5A0]/10 hover:bg-[#00F5A0]/20 text-[#00F5A0] text-xs font-semibold transition-all flex items-center gap-1.5"
+          >
+            <span>Mainnet Tokens Form</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>

@@ -120,7 +120,7 @@ export const AddressesPage: React.FC<AddressesPageProps> = ({
                   <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
                     {details.addressType}
                   </span>
-                  <span className="text-xs text-slate-400">MST Coral Testnet (91562037)</span>
+                  <span className="text-xs text-slate-400">MST Coral Testnet (54635)</span>
                 </div>
                 <div className="flex items-center gap-2 font-mono text-sm sm:text-base font-bold text-slate-900 dark:text-white break-all">
                   <span>{details.address}</span>
@@ -135,7 +135,7 @@ export const AddressesPage: React.FC<AddressesPageProps> = ({
               </div>
 
               <a
-                href={`https://testnet.mstscan.com/address/${details.address}`}
+                href={`https://mstscan.com/address/${details.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-xs font-semibold transition-all flex items-center gap-1.5 shrink-0 self-start md:self-auto"

@@ -12,15 +12,8 @@ import {
   TrendingDown,
   Scale,
   Wallet,
-  BookOpen,
-  Code2,
-  Webhook,
-  ActivitySquare,
-  Server,
-  Settings,
   ChevronLeft,
-  ChevronRight,
-  GraduationCap
+  ChevronRight
 } from 'lucide-react';
 
 export type PageId =
@@ -35,14 +28,7 @@ export type PageId =
   | 'proof-explorer'
   | 'compression-analytics'
   | 'settlement-history'
-  | 'wallet'
-  | 'developer-docs'
-  | 'developer-sdk'
-  | 'developer-webhooks'
-  | 'developer-usage'
-  | 'system-status'
-  | 'settings'
-  | 'learn';
+  | 'wallet';
 
 interface NavItem {
   id: PageId;
@@ -107,34 +93,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         { id: 'wallet', label: 'BridgeKey Wallet', icon: Wallet }
       ]
-    },
-    {
-      title: 'Developer Tools',
-      items: [
-        { id: 'developer-docs', label: 'API Documentation', icon: BookOpen },
-        { id: 'developer-sdk', label: 'SDK & Integration', icon: Code2 },
-        { id: 'developer-webhooks', label: 'Webhooks', icon: Webhook },
-        { id: 'developer-usage', label: 'API Usage', icon: ActivitySquare }
-      ]
-    },
-    {
-      title: 'System',
-      items: [
-        { id: 'system-status', label: 'System Status', icon: Server },
-        { id: 'settings', label: 'Settings', icon: Settings },
-        {
-          id: 'learn',
-          label: 'How L2 Works',
-          icon: GraduationCap,
-          badgeText: 'Guide'
-        }
-      ]
     }
   ];
 
   return (
     <aside
-      className={`border-r border-slate-200 dark:border-gray-800 bg-white/95 dark:bg-[#0b1021]/95 transition-all duration-300 flex flex-col justify-between shrink-0 z-30 min-h-[calc(100vh-4rem)] ${
+      className={`border-r border-slate-200 dark:border-[#16233b] bg-white/95 dark:bg-[#070c18]/95 transition-all duration-300 flex flex-col justify-between shrink-0 z-30 min-h-[calc(100vh-4rem)] ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -148,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors ml-auto"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-[#0c1424] transition-colors ml-auto"
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -174,36 +138,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     title={isCollapsed ? item.label : undefined}
                     className={`w-full flex items-center ${
                       isCollapsed ? 'justify-center px-2' : 'justify-between px-3'
-                    } py-2 rounded-xl text-xs font-medium transition-all ${
+                    } py-2.5 rounded-xl text-xs font-medium transition-all ${
                       isActive
-                        ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-semibold shadow-sm'
-                        : 'text-slate-600 dark:text-gray-400 hover:text-slate-950 dark:hover:text-gray-100 hover:bg-slate-100 dark:hover:bg-gray-800/60'
+                        ? 'bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/40 font-semibold shadow-sm shadow-[#00F5A0]/15'
+                        : 'text-slate-600 dark:text-gray-400 hover:text-slate-950 dark:hover:text-gray-100 hover:bg-slate-100 dark:hover:bg-[#0c1424]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
                       <Icon
-                        className={`w-4 h-4 shrink-0 ${
+                        className={`w-4 h-4 shrink-0 transition-colors ${
                           isActive
-                            ? 'text-emerald-600 dark:text-emerald-400'
+                            ? 'text-[#00F5A0]'
                             : 'text-slate-400 dark:text-gray-400'
                         }`}
                       />
                       {!isCollapsed && <span>{item.label}</span>}
                     </div>
 
-                    {!isCollapsed && (
-                      <div className="flex items-center gap-1.5">
-                        {item.badge !== undefined && (
-                          <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
-                            {item.badge}
-                          </span>
-                        )}
-                        {item.badgeText && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30">
-                            {item.badgeText}
-                          </span>
-                        )}
-                      </div>
+                    {!isCollapsed && item.badge !== undefined && (
+                      <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/30 font-mono">
+                        {item.badge}
+                      </span>
                     )}
                   </button>
                 );
@@ -213,16 +168,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Bottom Compact Network Info */}
+      {/* Bottom Network Signal Card */}
       {!isCollapsed && (
-        <div className="p-3 border-t border-slate-200 dark:border-gray-800/80 m-3 rounded-2xl bg-slate-50 dark:bg-[#111827]/80 border text-[11px]">
+        <div className="p-3 border-t border-slate-200 dark:border-[#16233b] m-3 rounded-2xl bg-slate-50 dark:bg-[#0c1424] border text-[11px] shadow-sm">
           <div className="flex items-center justify-between text-slate-500 dark:text-gray-400 mb-1">
-            <span className="font-semibold text-slate-700 dark:text-gray-300">MST Coral Testnet</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-semibold text-slate-800 dark:text-gray-200">MST Network Status</span>
+            <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse shadow-[0_0_8px_#00F5A0]" />
           </div>
-          <div className="text-[10px] text-slate-400 font-mono">Chain ID: 91562037</div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">
-            Settlement: Live EVM Batching
+          <div className="text-[10px] text-slate-400 font-mono">Mainnet 4646 · Coral 54635</div>
+          <div className="text-[10px] text-[#00F5A0] font-medium mt-1 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0]" />
+            <span>Live Blockscout v2 Sync</span>
           </div>
         </div>
       )}

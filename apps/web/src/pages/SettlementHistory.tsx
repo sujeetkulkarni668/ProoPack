@@ -68,7 +68,7 @@ export const SettlementHistoryPage: React.FC<SettlementHistoryProps> = ({ onSele
             </h1>
           </div>
           <p className="text-xs text-slate-500 dark:text-gray-400">
-            Audit on-chain commitments to ProofPackSettlement.sol on MST Blockchain (Chain ID: 91562037)
+            Audit on-chain commitments to ProofPackSettlement.sol on MST Blockchain (Chain ID: 54635)
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export const SettlementHistoryPage: React.FC<SettlementHistoryProps> = ({ onSele
           <div className="text-sm font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1 truncate">
             MST Coral Testnet
           </div>
-          <span className="text-[10px] text-slate-500">Chain ID: 91562037</span>
+          <span className="text-[10px] text-slate-500">Chain ID: 54635</span>
         </div>
       </div>
 

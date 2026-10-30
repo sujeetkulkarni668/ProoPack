@@ -29,21 +29,43 @@ export const MST_NETWORKS = {
     chainlistUrl: 'https://chainlist.org/chain/4646',
     tokenRequestUrl: 'https://mstblockchain.com/contact/'
   },
+  // Official active target testnet: MST Coral Testnet
   TESTNET: {
-    chainId: 91562037,
-    hexChainId: '0x5752035',
-    name: 'MST Testnet',
+    chainId: 54635,
+    hexChainId: '0xd56b',
+    name: 'MST Coral Testnet',
     currency: {
       name: 'Testnet MST Coin',
       symbol: 'tMSTC',
       decimals: 18
     },
+    rpcUrls: [
+      'https://coralrpc.mstblockchain.com'
+    ],
+    blockExplorerUrls: [
+      'https://coral.mstscan.com',
+      'https://testnet.mstscan.com'
+    ],
+    faucetUrls: [
+      'https://coral-faucet.mstblockchain.com/'
+    ],
+    chainlistUrl: 'https://cryptotools.vip/chainlist/mst-coral-testnet-54635'
+  },
+  // Legacy testnet (Deprecated, scheduled for shutdown January 31, 2027)
+  LEGACY_TESTNET: {
+    chainId: 91562037,
+    hexChainId: '0x5752035',
+    name: 'MST Legacy Testnet',
+    deprecated: true,
+    shutdownDeadline: '2027-01-31',
+    currency: {
+      name: 'Legacy Testnet MST Coin',
+      symbol: 'tMSTC',
+      decimals: 18
+    },
     rpcUrls: ['https://testnetrpc.mstblockchain.com'],
     blockExplorerUrls: ['https://testnet.mstscan.com'],
-    faucetUrls: [
-      'https://coral-faucet.mstblockchain.com/',
-      'https://faucet.mstblockchain.com'
-    ],
+    faucetUrls: ['https://coral-faucet.mstblockchain.com/'],
     chainlistUrl: 'https://chainlist.org/chain/91562037'
   },
   LOCAL: {

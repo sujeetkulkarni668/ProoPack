@@ -5,38 +5,40 @@
 @layer base {
   :root {
     --background: #f8fafc;
-    --foreground: #0f172a;
+    --foreground: #070c18;
     --card: #ffffff;
-    --card-foreground: #0f172a;
+    --card-foreground: #070c18;
     --muted: #f1f5f9;
     --muted-foreground: #64748b;
     --border: #e2e8f0;
-    --ring: #16a34a;
+    --ring: #00F5A0;
+    --signal: #00F5A0;
 
     /* Raw variables used directly by Web3Bento */
     --color-card: #ffffff;
-    --color-foreground: #0f172a;
+    --color-foreground: #070c18;
     --color-muted: #f1f5f9;
     --color-muted-foreground: #64748b;
     --color-border: #e2e8f0;
   }
 
   .dark {
-    --background: #090d1a;
+    --background: #070c18;
     --foreground: #f3f4f6;
-    --card: #111827;
+    --card: #0c1424;
     --card-foreground: #f9fafb;
-    --muted: #1f2937;
-    --muted-foreground: #9ca3af;
-    --border: #1f2937;
-    --ring: #22c55e;
+    --muted: #131d33;
+    --muted-foreground: #94a3b8;
+    --border: #16233b;
+    --ring: #00F5A0;
+    --signal: #00F5A0;
 
     /* Raw variables used directly by Web3Bento */
-    --color-card: #111827;
+    --color-card: #0c1424;
     --color-foreground: #f9fafb;
-    --color-muted: #1f2937;
-    --color-muted-foreground: #9ca3af;
-    --color-border: #1f2937;
+    --color-muted: #131d33;
+    --color-muted-foreground: #94a3b8;
+    --color-border: #16233b;
   }
 
   body {
@@ -49,6 +51,17 @@
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
+}
+
+/* 21st.dev Mint Signal Utilities */
+.mint-signal-glow {
+  box-shadow: 0 0 25px -4px rgba(0, 245, 160, 0.28);
+}
+.mint-signal-text {
+  color: #00F5A0;
+}
+.mint-signal-border {
+  border-color: rgba(0, 245, 160, 0.35);
 }
 
 /* Custom Scrollbar */

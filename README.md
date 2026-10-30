@@ -4,7 +4,7 @@
 [![EVM Compatible](https://img.shields.io/badge/EVM-Compatible%20(MST)-blue.svg)](https://mstblockchain.com)
 [![BridgeKey](https://img.shields.io/badge/Wallet-BridgeKey%20Integrated-indigo.svg)](https://bridgekey.io)
 
-**ProofPack** is an end-to-end Layer 2 transaction aggregation and settlement platform engineered for **MST Blockchain** (Chain ID: `4646` Mainnet, `91562037` Coral Testnet).
+**ProofPack** is an end-to-end Layer 2 transaction aggregation and settlement platform engineered for **MST Blockchain** (Chain ID: `4646` Mainnet, `54635` Coral Testnet).
 
 ProofPack addresses blockchain transaction bottlenecks by bundling, compressing, and committing micro-transactions off-chain, settling them deterministically onto MST Blockchain in verifiable batches.
 
@@ -26,7 +26,7 @@ ProofPack addresses blockchain transaction bottlenecks by bundling, compressing,
 | Network | Chain ID (Dec) | Native Coin | Public RPC Endpoint | Explorer & Faucets | Chainlist |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **MST Mainnet** | `4646` | MSTC | `https://mariorpc.mstblockchain.com`<br>`https://craftrpc.mstblockchain.com` | [mstscan.com](https://mstscan.com)<br>[Request Tokens](https://mstblockchain.com/contact/) | [chainlist.org/chain/4646](https://chainlist.org/chain/4646) |
-| **MST Coral Testnet** | `91562037` | tMSTC | `https://testnetrpc.mstblockchain.com` | [testnet.mstscan.com](https://testnet.mstscan.com)<br>[Coral Faucet](https://coral-faucet.mstblockchain.com/) | [chainlist.org/chain/91562037](https://chainlist.org/chain/91562037) |
+| **MST Coral Testnet** | `54635` | tMSTC | `https://coralrpc.mstblockchain.com` | [coral.mstscan.com](https://coral.mstscan.com)<br>[Coral Faucet](https://coral-faucet.mstblockchain.com/) | [cryptotools.vip/chainlist/mst-coral-testnet-54635](https://cryptotools.vip/chainlist/mst-coral-testnet-54635) |
 | **Local Devnet**| `31337`| tMSTC | `http://127.0.0.1:8545` | Local / In-memory | N/A |
 
 ---

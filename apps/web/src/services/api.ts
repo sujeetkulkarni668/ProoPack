@@ -12,7 +12,10 @@ import {
   SettlementRecord,
   WebhookEndpoint,
   ApiUsageStats,
-  SearchResult
+  SearchResult,
+  VerifiedMainnetTx,
+  MainnetTransactionsResponse,
+  MainnetStatusResponse
 } from '../types';
 
 const API_BASE = '/';
@@ -171,5 +174,24 @@ export async function submitTransaction(payload: {
 export async function triggerOperatorFlush(): Promise<{ triggered: boolean; batch: BatchMetadata | null }> {
   const res = await fetch(`${API_BASE}v1/operator/flush`, { method: 'POST' });
   if (!res.ok) throw new Error('Failed to flush batch');
+  return res.json();
+}
+
+export async function fetchMainnetTransactions(limit = 30, refresh = false): Promise<MainnetTransactionsResponse> {
+  const url = `${API_BASE}v1/mainnet/transactions?limit=${limit}${refresh ? '&refresh=true' : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch MST Mainnet transactions');
+  return res.json();
+}
+
+export async function fetchMainnetTransactionByHash(hash: string): Promise<{ success: boolean; transaction: VerifiedMainnetTx }> {
+  const res = await fetch(`${API_BASE}v1/mainnet/transactions/${hash}`);
+  if (!res.ok) throw new Error(`Failed to fetch MST Mainnet transaction ${hash}`);
+  return res.json();
+}
+
+export async function fetchMainnetStatus(): Promise<MainnetStatusResponse> {
+  const res = await fetch(`${API_BASE}v1/mainnet/status`);
+  if (!res.ok) throw new Error('Failed to fetch MST Mainnet network status');
   return res.json();
 }

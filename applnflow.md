@@ -1,6 +1,6 @@
 # ProofPack Application Flow & Gas Optimization Mechanics
 
-This document explains the division of responsibilities between the **User** and the **Server** in ProofPack, and how transaction gas fees are reduced by over 91% to 95% on the **MST Blockchain** (Chain ID: `91562037` Coral Testnet, `4646` Mainnet).
+This document explains the division of responsibilities between the **User** and the **Server** in ProofPack, and how transaction gas fees are reduced by over 91% to 95% on the **MST Blockchain** (Chain ID: `54635` Coral Testnet, `4646` Mainnet).
 
 ---
 

@@ -8,29 +8,115 @@ export class BridgeKeyWalletAdapter implements IWalletAdapter {
   private provider: EIP1193Provider | null = null;
   private currentAddress: Address | null = null;
   private listeners: Map<string, Array<(...args: any[]) => void>> = new Map();
+  private announcedProviders: any[] = [];
 
   constructor(customProvider?: EIP1193Provider) {
     if (customProvider) {
       this.provider = customProvider;
       this.attachListeners();
     } else if (typeof window !== 'undefined') {
+      this.initEIP6963Listener();
       this.detectProvider();
     }
   }
 
-  private detectProvider(): void {
+  private initEIP6963Listener(): void {
+    if (typeof window === 'undefined') return;
+    try {
+      window.addEventListener('eip6963:announceProvider', (event: any) => {
+        if (event.detail && event.detail.provider) {
+          this.announcedProviders.push(event.detail);
+          const name = event.detail.info?.name?.toLowerCase() || '';
+          const rdns = event.detail.info?.rdns?.toLowerCase() || '';
+          if (name.includes('bridgekey') || rdns.includes('bridgekey')) {
+            this.provider = event.detail.provider;
+            this.attachListeners();
+          }
+        }
+      });
+      window.dispatchEvent(new Event('eip6963:requestProvider'));
+    } catch {
+      // EIP-6963 not supported in this environment
+    }
+  }
+
+  private detectProvider(): EIP1193Provider | null {
+    if (this.provider) return this.provider;
+    if (typeof window === 'undefined') return null;
+
     const win = window as any;
+
+    // 1. Check window.bridgekey (lowercase)
     if (win.bridgekey) {
       this.provider = win.bridgekey;
-    } else if (win.ethereum?.isBridgeKey) {
-      this.provider = win.ethereum;
-    } else if (win.ethereum) {
-      // Fallback to standard injected provider if BridgeKey is selected in multi-wallet environment
+    }
+    // 2. Check window.bridgeKey (camelCase)
+    else if (win.bridgeKey) {
+      this.provider = win.bridgeKey;
+    }
+    // 3. Check window.BridgeKey (PascalCase)
+    else if (win.BridgeKey) {
+      this.provider = win.BridgeKey;
+    }
+    // 4. Check window.ethereum.providers for explicit BridgeKey
+    else if (Array.isArray(win.ethereum?.providers)) {
+      const bkProvider = win.ethereum.providers.find(
+        (p: any) =>
+          p.isBridgeKey ||
+          p.bridgekey ||
+          p.name?.toLowerCase().includes('bridgekey') ||
+          p.constructor?.name?.toLowerCase().includes('bridgekey')
+      );
+      if (bkProvider) {
+        this.provider = bkProvider;
+      } else {
+        // Fallback to primary provider in multi-provider setup
+        this.provider = win.ethereum;
+      }
+    }
+    // 5. Check window.ethereum.isBridgeKey
+    else if (win.ethereum?.isBridgeKey) {
       this.provider = win.ethereum;
     }
+    // 6. Check announced EIP-6963 providers
+    else if (this.announcedProviders.length > 0) {
+      const announced = this.announcedProviders.find(
+        (p: any) =>
+          p.info?.name?.toLowerCase().includes('bridgekey') ||
+          p.info?.rdns?.toLowerCase().includes('bridgekey')
+      );
+      if (announced) {
+        this.provider = announced.provider;
+      }
+    }
+    // 7. General Web3 EVM fallback (BridgeKey operates as standard EVM injected provider)
+    else if (win.ethereum) {
+      this.provider = win.ethereum;
+    }
+
     if (this.provider) {
       this.attachListeners();
     }
+
+    return this.provider;
+  }
+
+  /**
+   * Polls briefly to wait for asynchronous extension injection
+   */
+  private async waitForProvider(timeoutMs = 1200): Promise<EIP1193Provider | null> {
+    if (this.detectProvider()) return this.provider;
+
+    const start = Date.now();
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        const found = this.detectProvider();
+        if (found || Date.now() - start >= timeoutMs) {
+          clearInterval(interval);
+          resolve(found);
+        }
+      }, 80);
+    });
   }
 
   private attachListeners(): void {
@@ -61,20 +147,20 @@ export class BridgeKeyWalletAdapter implements IWalletAdapter {
     if (this.provider) return true;
     if (typeof window !== 'undefined') {
       const win = window as any;
-      return !!(win.bridgekey || win.ethereum);
+      return !!(win.bridgekey || win.bridgeKey || win.BridgeKey || win.ethereum);
     }
     return false;
   }
 
   public async connect(): Promise<{ address: Address; chainId: number }> {
     if (!this.provider) {
-      this.detectProvider();
+      await this.waitForProvider(1200);
     }
 
     if (!this.provider) {
       throw new ProofPackError(
         ErrorCode.WALLET_NOT_CONNECTED,
-        'BridgeKey Wallet extension not detected. Please install BridgeKey Wallet.'
+        'BridgeKey Wallet extension not detected. Please install BridgeKey from https://bridgekey.io/ or enable your Web3 extension.'
       );
     }
 
@@ -142,6 +228,8 @@ export class BridgeKeyWalletAdapter implements IWalletAdapter {
           netConfig = MST_NETWORKS.MAINNET;
         } else if (targetChainId === MST_NETWORKS.TESTNET.chainId) {
           netConfig = MST_NETWORKS.TESTNET;
+        } else if (targetChainId === (MST_NETWORKS as any).LEGACY_TESTNET?.chainId) {
+          netConfig = (MST_NETWORKS as any).LEGACY_TESTNET;
         }
 
         if (netConfig) {
@@ -179,35 +267,25 @@ export class BridgeKeyWalletAdapter implements IWalletAdapter {
     const currentChain = await this.getChainId();
     if (currentChain !== chainId) {
       throw new ProofPackError(
-        ErrorCode.NETWORK_MISMATCH,
-        `Wallet is on chain ${currentChain}, but transaction targets chain ${chainId}. Switch chain first.`
+        ErrorCode.UNSUPPORTED_CHAIN,
+        `Connected to chain ${currentChain}, but transfer requires chain ${chainId}`
       );
     }
 
     const domain = getEIP712Domain(chainId, verifyingContract);
 
-    const message = {
-      sender: getAddress(payload.sender),
-      to: getAddress(payload.to),
-      amount: payload.amount.toString(),
-      fee: payload.fee.toString(),
-      nonce: payload.nonce.toString(),
-      validUntil: payload.validUntil.toString()
-    };
-
     const dataToSign = JSON.stringify({
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' }
-        ],
-        Transfer: TRANSFER_TYPES.Transfer
-      },
+      types: TRANSFER_TYPES,
       primaryType: 'Transfer',
       domain,
-      message
+      message: {
+        sender: getAddress(payload.sender),
+        to: getAddress(payload.to),
+        amount: payload.amount.toString(),
+        fee: payload.fee.toString(),
+        nonce: payload.nonce.toString(),
+        validUntil: payload.validUntil.toString()
+      }
     });
 
     try {
@@ -219,37 +297,50 @@ export class BridgeKeyWalletAdapter implements IWalletAdapter {
       return signature;
     } catch (err: any) {
       if (err.code === 4001 || err.message?.includes('User rejected')) {
-        throw new ProofPackError(ErrorCode.USER_REJECTED, 'Signature rejected by user');
+        throw new ProofPackError(ErrorCode.USER_REJECTED, 'User rejected signing transfer');
       }
       throw new ProofPackError(
         ErrorCode.INVALID_SIGNATURE,
-        `BridgeKey signing failed: ${err.message}`
+        err.message || 'BridgeKey signature request failed'
       );
     }
   }
 
-  public on<K extends keyof WalletAdapterEvents>(event: K, listener: WalletAdapterEvents[K]): void {
-    const existing = this.listeners.get(event) || [];
-    existing.push(listener as any);
-    this.listeners.set(event, existing);
+  public on<K extends keyof WalletAdapterEvents>(
+    event: K,
+    callback: WalletAdapterEvents[K]
+  ): void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, []);
+    }
+    this.listeners.get(event)!.push(callback);
   }
 
-  public off<K extends keyof WalletAdapterEvents>(event: K, listener: WalletAdapterEvents[K]): void {
-    const existing = this.listeners.get(event);
-    if (!existing) return;
-    this.listeners.set(event, existing.filter(l => l !== (listener as any)));
+  public off<K extends keyof WalletAdapterEvents>(
+    event: K,
+    callback: WalletAdapterEvents[K]
+  ): void {
+    const list = this.listeners.get(event);
+    if (!list) return;
+    this.listeners.set(
+      event,
+      list.filter((cb) => cb !== callback)
+    );
   }
 
-  private emit<K extends keyof WalletAdapterEvents>(event: K, ...args: any[]): void {
+  private emit<K extends keyof WalletAdapterEvents>(
+    event: K,
+    ...args: Parameters<WalletAdapterEvents[K]>
+  ): void {
     const list = this.listeners.get(event);
     if (list) {
-      for (const fn of list) {
+      list.forEach((cb) => {
         try {
-          fn(...args);
+          (cb as any)(...args);
         } catch (e) {
-          console.error(`Error in ${event} listener:`, e);
+          console.error(`Error in BridgeKey ${event} listener:`, e);
         }
-      }
+      });
     }
   }
 }

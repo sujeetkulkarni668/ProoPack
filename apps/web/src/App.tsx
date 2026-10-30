@@ -17,13 +17,6 @@ import { ProofExplorerPage } from './pages/ProofExplorer';
 import { CostAnalyticsPage } from './pages/CostAnalytics';
 import { SettlementHistoryPage } from './pages/SettlementHistory';
 import { WalletPage } from './pages/WalletPage';
-import { DeveloperDocsPage } from './pages/DeveloperDocs';
-import { DeveloperSdkPage } from './pages/DeveloperSdk';
-import { DeveloperWebhooksPage } from './pages/DeveloperWebhooks';
-import { DeveloperUsagePage } from './pages/DeveloperUsage';
-import { NetworkStatusPage } from './pages/NetworkStatus';
-import { SettingsPage } from './pages/Settings';
-import { LearningLab } from './pages/LearningLab';
 
 // Hooks & Services
 import { useWallet } from './hooks/useWallet';
@@ -146,7 +139,6 @@ export const App: React.FC = () => {
         onOpenWalletModal={() => setIsWalletModalOpen(true)}
         onDisconnect={disconnect}
         onOpenSendModal={() => setIsSendModalOpen(true)}
-        onOpenLearnModal={() => setCurrentPage('learn')}
         onRefresh={loadData}
         isRefreshing={isRefreshing}
         onNavigateToEntity={handleNavigateToEntity}
@@ -250,24 +242,6 @@ export const App: React.FC = () => {
               onSelectTx={handleSelectTx}
             />
           )}
-
-          {/* E. Developer Tools */}
-          {currentPage === 'developer-docs' && <DeveloperDocsPage />}
-          {currentPage === 'developer-sdk' && <DeveloperSdkPage />}
-          {currentPage === 'developer-webhooks' && <DeveloperWebhooksPage />}
-          {currentPage === 'developer-usage' && <DeveloperUsagePage />}
-
-          {/* F. System */}
-          {currentPage === 'system-status' && (
-            <NetworkStatusPage health={health} onRefresh={loadData} />
-          )}
-
-          {currentPage === 'settings' && (
-            <SettingsPage onSwitchChain={switchChain} currentChainId={chainId} />
-          )}
-
-          {/* Interactive Learning Lab */}
-          {currentPage === 'learn' && <LearningLab />}
         </main>
       </div>
 

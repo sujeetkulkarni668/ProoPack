@@ -44,7 +44,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
-  const isSupportedNetwork = chainId === 91562037 || chainId === 4646;
+  const isSupportedNetwork = chainId === 54635 || chainId === 4646 || chainId === 91562037;
 
   const copyAddress = () => {
     if (!address) return;
@@ -90,14 +90,22 @@ export const WalletPage: React.FC<WalletPageProps> = ({
         <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-            <span>Connected to unsupported Chain ID ({chainId}). Please switch to MST Coral Testnet.</span>
+            <span>Connected to unsupported Chain ID ({chainId}). Please switch to MST Coral Testnet (54635) or MST Mainnet (4646).</span>
           </div>
-          <button
-            onClick={() => onSwitchChain(91562037)}
-            className="px-3 py-1.5 rounded-lg bg-amber-500 text-gray-950 font-bold text-xs hover:bg-amber-400 transition-colors shrink-0"
-          >
-            Switch to 91562037
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onSwitchChain(54635)}
+              className="px-3 py-1.5 rounded-lg bg-[#00F5A0] text-gray-950 font-bold text-xs hover:opacity-90 transition-all shrink-0"
+            >
+              Switch to Coral (54635)
+            </button>
+            <button
+              onClick={() => onSwitchChain(4646)}
+              className="px-3 py-1.5 rounded-lg border border-white/20 bg-white/5 text-white font-bold text-xs hover:bg-white/10 transition-all shrink-0"
+            >
+              Switch to Mainnet (4646)
+            </button>
+          </div>
         </div>
       )}
 

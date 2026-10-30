@@ -57,7 +57,7 @@ export const SendTransferModal: React.FC<SendTransferModalProps> = ({
       setError(null);
       setResultTxId(null);
 
-      const targetChainId = chainId || 91562037;
+      const targetChainId = chainId || 54635;
       const verifyingContract = '0x1111111111111111111111111111111111111111';
 
       // Amount in Wei (18 decimals)

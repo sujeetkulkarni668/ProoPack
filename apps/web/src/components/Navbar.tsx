@@ -4,15 +4,11 @@ import {
   Wallet,
   Sun,
   Moon,
-  GraduationCap,
   Search,
   RotateCw,
-  ExternalLink,
-  ChevronDown
+  ExternalLink
 } from 'lucide-react';
 import { searchGlobal } from '../services/api';
-import { SearchResult } from '../types';
-import { PageId } from './Sidebar';
 
 interface NavbarProps {
   address: string | null;
@@ -24,7 +20,6 @@ interface NavbarProps {
   onOpenWalletModal: () => void;
   onDisconnect: () => void;
   onOpenSendModal: () => void;
-  onOpenLearnModal?: () => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
   onNavigateToEntity?: (type: 'transaction' | 'batch' | 'address' | 'settlement' | 'proof', id: any) => void;
@@ -40,7 +35,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenWalletModal,
   onDisconnect,
   onOpenSendModal,
-  onOpenLearnModal,
   onRefresh,
   isRefreshing = false,
   onNavigateToEntity
@@ -53,24 +47,30 @@ export const Navbar: React.FC<NavbarProps> = ({
     if (id === 4646) {
       return {
         name: 'MST Mainnet (4646)',
-        color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+        color: 'bg-[#00F5A0]/10 text-[#00F5A0] border-[#00F5A0]/40 shadow-[0_0_10px_rgba(0,245,160,0.15)]'
+      };
+    }
+    if (id === 54635) {
+      return {
+        name: 'MST Coral Testnet (54635)',
+        color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
       };
     }
     if (id === 91562037 || id === 4545) {
       return {
-        name: 'MST Coral Testnet (91562037)',
-        color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30'
+        name: 'Legacy Testnet (Deprecated)',
+        color: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
       };
     }
     if (id === 31337) {
       return {
         name: 'Local Devnet',
-        color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30'
+        color: 'bg-purple-500/10 text-purple-400 border-purple-500/30'
       };
     }
     return {
-      name: `Chain ${id || 'Offline'}`,
-      color: 'bg-slate-200 dark:bg-gray-800 text-slate-600 dark:text-gray-400 border-slate-300 dark:border-gray-700'
+      name: `MST Mainnet (${id || 4646})`,
+      color: 'bg-[#00F5A0]/10 text-[#00F5A0] border-[#00F5A0]/30'
     };
   };
 
@@ -100,23 +100,23 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="h-16 border-b border-slate-200 dark:border-gray-800 bg-white/90 dark:bg-[#0a0f1d]/90 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 flex items-center justify-between gap-4 transition-colors">
-      {/* Brand */}
+    <header className="h-16 border-b border-slate-200 dark:border-[#16233b] bg-white/90 dark:bg-[#070c18]/90 backdrop-blur sticky top-0 z-40 px-4 sm:px-6 flex items-center justify-between gap-4 transition-colors">
+      {/* Brand with 21st.dev Mint Signal Accent */}
       <div className="flex items-center gap-3 shrink-0">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-          <Cpu className="w-5 h-5 text-gray-950 font-bold" />
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#00A86B] via-[#00D287] to-[#00F5A0] flex items-center justify-center shadow-lg shadow-[#00F5A0]/25">
+          <Cpu className="w-5 h-5 text-gray-950 font-extrabold" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
               ProofPack
             </span>
-            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
-              MST L2
+            <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
+              MST Mainnet
             </span>
           </div>
           <p className="hidden sm:block text-[10px] text-slate-500 dark:text-gray-400 font-medium">
-            Layer 2 Explorer & Settlement Engine
+            Layer 2 Explorer & Real-Time Settlement Engine
           </p>
         </div>
       </div>
@@ -129,12 +129,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search Tx Hash, Batch #, Address, Block, Proof..."
-            className="w-full pl-9 pr-8 py-1.5 rounded-xl border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-[#111827] text-xs text-slate-900 dark:text-gray-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+            placeholder="Search Mainnet Tx Hash, Block #, Address, Batch..."
+            className="w-full pl-9 pr-8 py-1.5 rounded-xl border border-slate-200 dark:border-[#16233b] bg-slate-50 dark:bg-[#0c1424] text-xs text-slate-900 dark:text-gray-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00F5A0]/50 transition-all font-mono"
           />
           {isSearching && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <RotateCw className="w-3 h-3 text-emerald-500 animate-spin" />
+              <RotateCw className="w-3 h-3 text-[#00F5A0] animate-spin" />
             </div>
           )}
         </form>
@@ -151,26 +151,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         {onRefresh && (
           <button
             onClick={onRefresh}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="p-1.5 rounded-lg border border-slate-200 dark:border-[#16233b] bg-slate-50 dark:bg-[#0c1424] text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             title="Refresh network metrics"
           >
-            <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-500' : ''}`} />
+            <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#00F5A0]' : ''}`} />
           </button>
         )}
 
-        {/* Learner Guide Button */}
-        {onOpenLearnModal && (
-          <button
-            onClick={onOpenLearnModal}
-            className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-semibold transition-colors"
-            title="Interactive Blockchain & L2 Learning Guide"
-          >
-            <GraduationCap className="w-3.5 h-3.5" />
-            <span>How L2 Works</span>
-          </button>
-        )}
-
-        {/* Free Faucet shortcut */}
+        {/* Free Faucet shortcut for Testnet */}
         <a
           href="https://coral-faucet.mstblockchain.com/"
           target="_blank"
@@ -192,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           onClick={onToggleTheme}
           aria-label="Toggle theme"
-          className="p-1.5 rounded-lg border border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900 text-slate-700 dark:text-gray-300 hover:text-slate-950 dark:hover:text-white transition-colors"
+          className="p-1.5 rounded-lg border border-slate-200 dark:border-[#16233b] bg-slate-50 dark:bg-[#0c1424] text-slate-700 dark:text-gray-300 hover:text-slate-950 dark:hover:text-white transition-colors"
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
         >
           {theme === 'dark' ? (
@@ -205,15 +193,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Quick Send Transaction Button */}
         <button
           onClick={onOpenSendModal}
-          className="hidden sm:flex px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-gray-950 font-bold text-xs shadow-md shadow-emerald-500/20 transition-all items-center gap-1.5"
+          className="hidden sm:flex px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#00D287] to-[#00F5A0] hover:from-[#00F5A0] hover:to-[#00D287] text-gray-950 font-bold text-xs shadow-md shadow-[#00F5A0]/25 transition-all items-center gap-1.5"
         >
           <span>Submit L2 Tx</span>
         </button>
 
         {/* Wallet Connect / State Button */}
         {isConnected && address ? (
-          <div className="flex items-center gap-2 bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-xl p-1 pr-2.5">
-            <div className="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-[10px] font-bold font-mono">
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-[#0c1424] border border-slate-200 dark:border-[#16233b] rounded-xl p-1 pr-2.5">
+            <div className="w-6 h-6 rounded-lg bg-[#00F5A0]/20 text-[#00F5A0] flex items-center justify-center text-[10px] font-bold font-mono">
               {isBridgeKey ? 'BK' : 'W3'}
             </div>
             <div className="text-left text-xs">
@@ -232,9 +220,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         ) : (
           <button
             onClick={onOpenWalletModal}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-gray-900 border border-slate-200 dark:border-gray-800 hover:border-emerald-500/50 text-slate-700 dark:text-gray-200 hover:text-slate-900 dark:hover:text-white font-semibold text-xs transition-all flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0c1424] border border-slate-200 dark:border-[#16233b] hover:border-[#00F5A0]/50 text-slate-700 dark:text-gray-200 hover:text-slate-900 dark:hover:text-white font-semibold text-xs transition-all flex items-center gap-1.5"
           >
-            <Wallet className="w-3.5 h-3.5 text-emerald-500" />
+            <Wallet className="w-3.5 h-3.5 text-[#00F5A0]" />
             <span className="hidden sm:inline">Connect</span>
           </button>
         )}
