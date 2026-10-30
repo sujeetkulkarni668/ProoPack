@@ -1,4 +1,4 @@
-name: ProofPack CI/CD Pipeline
+name: ProofPack CI/CD Pipelines
 
 on:
   push:
@@ -8,35 +8,90 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
-    name: Build, Test & Benchmark
+  # ==========================================
+  # PIPELINE 1: SMART CONTRACTS & SECURITY
+  # ==========================================
+  contracts-pipeline:
+    name: "Contracts: Hardhat Test & Bytecode Verification"
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
           cache: 'npm'
 
-      - name: Install Monorepo Dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Build All Monorepo Workspaces
-        run: npm run build
+      - name: Compile Solidity Smart Contracts
+        run: npm --workspace=contracts run build
 
-      - name: Run Cryptographic & Batcher Unit Tests
-        run: npm test
-
-      - name: Run Smart Contract Hardhat Tests
+      - name: Run Hardhat Unit & Replay Protection Tests
         run: npm run test:contracts
 
-      - name: Execute Gas & Compression Benchmark Harness
+  # ==========================================
+  # PIPELINE 2: BACKEND & L2 SEQUENCER ENGINE
+  # ==========================================
+  backend-pipeline:
+    name: "Backend: Microservices, Batcher & Compression Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Core Engines
+        run: |
+          npm --workspace=packages/shared run build
+          npm --workspace=packages/crypto run build
+          npm --workspace=packages/compression run build
+          npm --workspace=packages/chain-adapters run build
+          npm --workspace=apps/batcher run build
+          npm --workspace=apps/api run build
+
+      - name: Run Batcher & Cryptographic Unit Tests
+        run: npm test
+
+      - name: Run Gas & Calldata Benchmark Harness
         run: npm run benchmark
+
+  # ==========================================
+  # PIPELINE 3: FRONTEND WEB EXPLORER & BUILD
+  # ==========================================
+  frontend-pipeline:
+    name: "Frontend: React & Vite Production Build Verification"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Shared Packages
+        run: |
+          npm --workspace=packages/shared run build
+          npm --workspace=packages/crypto run build
+          npm --workspace=packages/compression run build
+          npm --workspace=packages/chain-adapters run build
+
+      - name: Compile TypeScript & Vite Production Bundle
+        run: npm --workspace=apps/web run build
