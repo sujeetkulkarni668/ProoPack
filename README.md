@@ -3,10 +3,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![EVM Compatible](https://img.shields.io/badge/EVM-Compatible%20(MST)-blue.svg)](https://mstblockchain.com)
 [![BridgeKey](https://img.shields.io/badge/Wallet-BridgeKey%20Integrated-indigo.svg)](https://bridgekey.io)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-success.svg)](https://proofpack-peach.vercel.app/)
+[![On--Chain Contract](https://img.shields.io/badge/On--Chain%20Contract-Coral%20Testnet-00F5A0.svg)](https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4)
 
 **ProofPack** is an end-to-end Layer 2 transaction aggregation and settlement platform engineered for **MST Blockchain** (Chain ID: `4646` Mainnet, `54635` Coral Testnet).
 
 ProofPack addresses blockchain transaction bottlenecks by bundling, compressing, and committing micro-transactions off-chain, settling them deterministically onto MST Blockchain in verifiable batches.
+
+---
+
+## 🌐 Live Deployments & On-Chain Links
+
+- 🚀 **Live Production Application:** [https://proofpack-peach.vercel.app/](https://proofpack-peach.vercel.app/)
+- 📜 **Deployed Smart Contract:** [ProofPackSettlement on MST Coral Explorer](https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4)
+- 🔗 **Deployment Transaction:** [0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1](https://coral.mstscan.com/tx/0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1)
 
 ---
 
