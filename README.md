@@ -12,11 +12,19 @@ ProofPack addresses blockchain transaction bottlenecks by bundling, compressing,
 
 ---
 
-## 🌐 Live Deployments & On-Chain Links
+## 🌐 Project Links & On-Chain Deployment
 
-- 🚀 **Live Production Application:** [https://proofpack-peach.vercel.app/](https://proofpack-peach.vercel.app/)
-- 📜 **Deployed Smart Contract:** [ProofPackSettlement on MST Coral Explorer](https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4)
-- 🔗 **Deployment Transaction:** [0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1](https://coral.mstscan.com/tx/0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1)
+| Resource | Link | Description |
+|---|---|---|
+| 🚀 **Live Web Application** | [proofpack-peach.vercel.app](https://proofpack-peach.vercel.app/) | Production Layer 2 Explorer & BridgeKey Interface |
+| 📜 **Deployed Smart Contract** | [`0x8bdc...c8e4` on Coral Explorer](https://coral.mstscan.com/address/0x8bdc4026a90297bf225761923488a34d0073c8e4) | `ProofPackSettlement.sol` on MST Coral Testnet |
+| 🔗 **Deployment Transaction** | [`0x8d23...d9b1` on Explorer](https://coral.mstscan.com/tx/0x8d23f4bc2fdabd81fc7fab6a18e3c51e2198920d7379ac92a5d9445dd530d9b1) | Confirmed in block `405557` (873,085 gas) |
+| 💻 **GitHub Repository** | [github.com/sujeetkulkarni668/ProoPack](https://github.com/sujeetkulkarni668/ProoPack) | Full Monorepo Source Code (MIT Licensed) |
+| 🚰 **MST Coral Testnet Faucet** | [coral-faucet.mstblockchain.com](https://coral-faucet.mstblockchain.com/) | Official Faucet for `tMSTC` Gas Tokens |
+| 🔍 **MST Coral Block Explorer** | [coral.mstscan.com](https://coral.mstscan.com) | Official Coral Testnet Blockscout v2 Explorer |
+| 🏛️ **MST Mainnet Explorer** | [mstscan.com](https://mstscan.com) | MST Blockchain L1 Mainnet Explorer |
+| 🔑 **BridgeKey Wallet** | [bridgekey.io](https://bridgekey.io) | Official MST Ecosystem Web3 Wallet |
+| 📚 **MST Chainlist (54635)** | [cryptotools.vip/chainlist/mst-coral-testnet-54635](https://cryptotools.vip/chainlist/mst-coral-testnet-54635) | RPC and Network Configuration Metadata |
 
 ---
 
